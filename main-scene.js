@@ -34,16 +34,6 @@ window.Cube = window.classes.Cube =
     };
 
 
-
-
-//-------------------------------------------------------------------------------------------------------------
-//CHESS PIECES CLASSES
-
-
-
-
-
-
 //-------------------------------------------------------------------------------------------------------------
 //MAIN SCENE CLASS
 
@@ -84,7 +74,7 @@ window.Chess_Scene = window.classes.Chess_Scene =
                 diffusivity: .4,
                 specularity: 0.2
             });
-            this.plastic = this.board.override({specularity: .6});
+            this.plastic = this.board.override({ambient: 1, specularity: .6});
             this.lights = [new Light(Vec.of(0, 5, 5, 1), Color.of(1, .4, 1, 1), 100000)];
 
 
@@ -99,6 +89,9 @@ window.Chess_Scene = window.classes.Chess_Scene =
             //variables for camera view
             this.topview = Vec.of(-2,36,-2);
             this.beginview = Vec.of(-2, 24.42, 22.69);
+            //mirrored vectors must change since origin is offset
+            this.top_mirrored = Vec.of(-4,36,-4);
+            this.begin_mirrored = Vec.of(-3, 24.42, -26.69);
             this.top = false;
             this.lookaround = false;
             this.rotate = false;
@@ -338,15 +331,18 @@ window.Chess_Scene = window.classes.Chess_Scene =
                 //poi = center of board
                 //top = far edge of board
                 if (this.rotate){
-                    var desired = Mat4.look_at(this.topview, Vec.of(-2,2,-2), Vec.of(0,2,-10));
+                    //rotate camera angle to mirror last one
+                    // poi and eye change to -4,y,-4 since center of board offset
+                    // flip top vector
+                    var desired = Mat4.look_at(this.top_mirrored, Vec.of(-4,2,-4), Vec.of(0,2,6));
                     //map inverted matrix to camera
-                    desired = desired.map((x, i) => Vec.from( graphics_state.camera_transform[i]).mix(x, .1));
+                    desired = desired.map((x, i) => Vec.from( graphics_state.camera_transform[i]).mix(x, .05));
                     //set equal to camera transformation
                     graphics_state.camera_transform = desired;
                 } else {
                     var desired = Mat4.look_at(this.topview, Vec.of(-2,2,-2), Vec.of(0,2,-10));
                     //map inverted matrix to camera
-                    desired = desired.map((x, i) => Vec.from( graphics_state.camera_transform[i]).mix(x, .1));
+                    desired = desired.map((x, i) => Vec.from( graphics_state.camera_transform[i]).mix(x, .05));
                     //set equal to camera transformation
                     graphics_state.camera_transform = desired;
                 }
@@ -357,15 +353,18 @@ window.Chess_Scene = window.classes.Chess_Scene =
                 //poi = center of board
                 //top = far edge of board
                 if (this.rotate){
-                    var desired = Mat4.look_at(this.beginview, Vec.of(-2,2,-2), Vec.of(0,2,-10));
+                    //rotate camera angle to mirror last one
+                    //poi change to -4,y,-4 since center of board offset
+                    //mirror eye, mirror top
+                    var desired = Mat4.look_at(this.begin_mirrored, Vec.of(-4,2,-4), Vec.of(0,2,6.2));
                     //map inverted matrix to camera
-                    desired = desired.map((x, i) => Vec.from( graphics_state.camera_transform[i]).mix(x, .1));
+                    desired = desired.map((x, i) => Vec.from( graphics_state.camera_transform[i]).mix(x, .05));
                     //set equal to camera transformation
                     graphics_state.camera_transform = desired;
                 } else {
                     var desired = Mat4.look_at(this.beginview, Vec.of(-2,2,-2), Vec.of(0,2,-10));
                     //map inverted matrix to camera
-                    desired = desired.map((x, i) => Vec.from( graphics_state.camera_transform[i]).mix(x, .1));
+                    desired = desired.map((x, i) => Vec.from( graphics_state.camera_transform[i]).mix(x, .05));
                     //set equal to camera transformation
                     graphics_state.camera_transform = desired;
                 }
@@ -386,6 +385,71 @@ window.Chess_Scene = window.classes.Chess_Scene =
 
 
 //-------------------------------------------------------------------------------------------------------------
+//DRAWING CHESS PIECES FUNCTIONS
+
+//make all pieces plastic
+
+        //draw pawn
+        draw_pawn(graphics_state, model_transform){
+
+
+
+        }
+
+        //draw rook
+        draw_rook(graphics_state, model_transform){
+
+
+
+        }
+
+
+        //draw bishop
+        draw_bishop(graphics_state, model_transform){
+
+
+
+        }
+
+
+        //draw knight
+        draw_knight(graphics_state, model_transform){
+
+
+
+        }
+
+
+        //draw queen
+        draw_queen(graphics_state, model_transform){
+
+
+
+        }
+
+
+        //draw king
+        draw_king(graphics_state, model_transform){
+
+
+
+        }
+
+
+//-------------------------------------------------------------------------------------------------------------
+//PLAYING GAME FUNCTIONS
+
+        //sets up chess board with all pieces on both sides
+        initialize_game(graphics_state){
+            //filler until further developed
+            let model_transform = Mat4.identity();
+            model_transform = model_transform.times(Mat4.translation([-12, 6, -12]));
+            this.shapes.ball.draw(graphics_state, model_transform, this.board.override({color: this.whitecolor}));
+        }
+
+
+
+//-------------------------------------------------------------------------------------------------------------
 //DISPLAY FUNCTION
 
         display(graphics_state) {
@@ -397,8 +461,11 @@ window.Chess_Scene = window.classes.Chess_Scene =
             
             this.draw_board(graphics_state, model_transform);
             
-
             this.handle_view(graphics_state);
+
+            this.initialize_game(graphics_state);
+
+            //this.play_game(graphics_state);
         }
     };
 
