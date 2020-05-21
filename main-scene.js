@@ -7,6 +7,34 @@
 //Jake Wallin
 
 //-------------------------------------------------------------------------------------------------------------
+//BOARD POSITION INDICIES in 3D points
+// RIGHT = +X
+// LEFT = -X
+// UP = -Z
+// DOWN = +Z
+
+//                                      WHITE SIDE
+/*
+  [-10,3,-10]   [-8,3,-10]  [-6,3,-10]  [-4,3,-10]  [-2,3,-10]  [0,3,-10]   [2,3,-10]   [4,3,-10]
+
+  [-10,3,-8]    [-8,3,-8]   [-6,3,-8]   [-4,3,-8]   [-2,3,-8]   [0,3,-8]    [2,3,-8]    [4,3,-8]
+
+  [-10,3,-6]    [-8,3,-6]   [-6,3,-6]   [-4,3,-6]   [-2,3,-6]   [0,3,-6]    [2,3,-6]    [4,3,-6]
+
+  [-10,3,-4]    [-8,3,-4]   [-6,3,-4]   [-4,3,-4]   [-2,3,-4]   [0,3,-4]    [2,3,-4]    [4,3,-4] 
+
+  [-10,3,-2]    [-8,3,-2]   [-6,3,-2]   [-4,3,-2]   [-2,3,-2]   [0,3,-2]    [2,3,-2]    [4,3,-2]
+
+  [-10,3,0]     [-8,3,0]    [-6,3,0]    [-4,3,0]    [-2,3,0]    [0,3,0]     [2,3,0]     [4,3,0]
+
+  [-10,3,2]     [-8,3,2]    [-6,3,2]    [-4,3,2]    [-2,3,2]    [0,3,2]     [2,3,2]     [4,3,2]
+
+  [-10,3,4]     [-8,3,4]    [-6,3,4]    [-4,3,4]    [-2,3,4]    [0,3,4]     [2,3,4]     [4,3,4]
+*/
+//                          BLACK SIDE & ORIGINAL CAMERA PLACEMENT
+
+
+//-------------------------------------------------------------------------------------------------------------
 //CUBE CLASS
 
 window.Cube = window.classes.Cube =
@@ -116,6 +144,7 @@ window.Chess_Scene = window.classes.Chess_Scene =
             this.key_triggered_button("Rotate", ["r"], () => {
                  this.rotate = !this.rotate;
             });
+            this.key_triggered_button("Reset Game", ["g"], this.initialize_game);
         }
 
 
@@ -163,12 +192,6 @@ window.Chess_Scene = window.classes.Chess_Scene =
 
         draw_board(graphics_state, model_transform){
             
-            //ball to visualize sides of the board before pieces are placed
-            model_transform = Mat4.identity();
-            model_transform = model_transform.times(Mat4.translation([-12, 6, -12]));
-            this.shapes.ball.draw(graphics_state, model_transform, this.board.override({color: this.whitecolor}));
-            model_transform = Mat4.identity();
-
             //draw the playing board
 
             // Start offset by 12 so board is kinda centered
@@ -394,7 +417,30 @@ window.Chess_Scene = window.classes.Chess_Scene =
         //draw pawn
         draw_pawn(graphics_state, model_transform, side){
             //create base with flattened sphere - draw at center of square
+            let base = model_transform.times(Mat4.scale(Vec.of(0.65, 0.3, 0.65)));
+            base = base.times(Mat4.translation([0, -2, 0]));
 
+            let ring = model_transform.times(Mat4.scale(Vec.of(0.5, 0.1, 0.5)));
+            ring = ring.times(Mat4.translation([0, 0.5, 0]));
+
+            //create body of pawn 
+            let mid = model_transform.times(Mat4.scale(Vec.of( 0.25, 0.5, 0.25)));
+            mid = mid.times(Mat4.translation([0,0.25,0]));
+
+            let top = model_transform.times(Mat4.scale(Vec.of( 0.35, 0.35, 0.35)));
+            top = top.times(Mat4.translation([0,1.5,0]));
+
+            if (side == "white"){
+                this.shapes.ball.draw(graphics_state, base, this.board.override({color: this.piece_color_white}));
+                this.shapes.ball.draw(graphics_state, ring, this.board.override({color: this.piece_color_white}));
+                this.shapes.ball.draw(graphics_state, mid, this.board.override({color: this.piece_color_white}));
+                this.shapes.ball.draw(graphics_state, top, this.board.override({color: this.piece_color_white}));
+            } else {
+                this.shapes.ball.draw(graphics_state, base, this.board.override({color: this.piece_color_black}));
+                this.shapes.ball.draw(graphics_state, ring, this.board.override({color: this.piece_color_black}));
+                this.shapes.ball.draw(graphics_state, mid, this.board.override({color: this.piece_color_black}));
+                this.shapes.ball.draw(graphics_state, top, this.board.override({color: this.piece_color_black}));
+            }
         }
 
         //draw rook
@@ -444,32 +490,32 @@ window.Chess_Scene = window.classes.Chess_Scene =
         initialize_game(graphics_state){
 
             //define position constants
-            let y = 2;
+            let y = 3;
 
             //z "rows" of teams
-            let black_pawn_z = 3;
-            let black_z = 5;
-            let white_pawn_z = -7;
-            let white_z = -9;
+            let black_pawn_z = 2;
+            let black_z = 4;
+            let white_pawn_z = -8;
+            let white_z = -10;
 
             //x positions of all the pieces
-            let rook_x = -9;    let rook2_x = 5;
-            let knight_x = -7;  let knight2_x = 3;
-            let bish_x = -5;    let bish2_x = 1;
-            let queen_x = -3;
-            let king_x = -1;
+            let rook_x = -10;    let rook2_x = 4;
+            let knight_x = -8;  let knight2_x = 2;
+            let bish_x = -6;    let bish2_x = 0;
+            let queen_x = -4;
+            let king_x = -2;
 
 
                                     //PAWNS
             //initialize black pawns
-            let pawn_pos = Mat4.identity().times(Mat4.translation([-9,y,black_pawn_z]));
+            let pawn_pos = Mat4.identity().times(Mat4.translation([-10,y,black_pawn_z]));
             for (let i = 0; i < 8; i++){
                 this.draw_pawn(graphics_state, pawn_pos, "black");
                 pawn_pos = pawn_pos.times(Mat4.translation([2,0,0]));
             }
 
             //initialize white pawns
-            pawn_pos = Mat4.identity().times(Mat4.translation([-9,y,white_pawn_z]));
+            pawn_pos = Mat4.identity().times(Mat4.translation([-10,y,white_pawn_z]));
             for (let i = 0; i < 8; i++){
                 this.draw_pawn(graphics_state, pawn_pos, "white");
                 pawn_pos = pawn_pos.times(Mat4.translation([2,0,0]));
