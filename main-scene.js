@@ -59,18 +59,6 @@ window.Chess_Scene = window.classes.Chess_Scene =
             };
             this.submit_shapes(context, shapes);
 
-
-            /*
-            const pieces = {
-                'pawn': new Pawn(),
-                'rook': new Rook(),
-                'bishop': new Bishop(),
-                'knight': new Knight(),
-                'queen': new Queen(),
-                'king': new King()
-            };
-            */
-
             // Make some Material objects available to you:
             this.board = context.get_instance(Phong_Shader).material(Color.of(.9, .5, .9, 1), {
                 ambient: .4,
@@ -82,9 +70,13 @@ window.Chess_Scene = window.classes.Chess_Scene =
 
 
             //define colors
+            //board colors
             this.woodcolor = Color.of(0.85,0.556,0.35,1);
             this.whitecolor = Color.of(1,1,1,1);
             this.blackcolor = Color.of(0,0,0,1);
+            //piece colors
+            this.piece_color_black = Color.of(0.5,0.5,0.5,1);
+            this.piece_color_white = Color.of(234/255,246/255,249/255,1);
 
             //add boolean for which colors the board is
             this.wood = true;
@@ -95,6 +87,7 @@ window.Chess_Scene = window.classes.Chess_Scene =
             //mirrored vectors must change since origin is offset
             this.top_mirrored = Vec.of(-4,36,-4);
             this.begin_mirrored = Vec.of(-3, 24.42, -26.69);
+            //buttons for camera view
             this.top = false;
             this.lookaround = false;
             this.rotate = false;
@@ -170,6 +163,12 @@ window.Chess_Scene = window.classes.Chess_Scene =
 
         draw_board(graphics_state, model_transform){
             
+            //ball to visualize sides of the board before pieces are placed
+            model_transform = Mat4.identity();
+            model_transform = model_transform.times(Mat4.translation([-12, 6, -12]));
+            this.shapes.ball.draw(graphics_state, model_transform, this.board.override({color: this.whitecolor}));
+            model_transform = Mat4.identity();
+
             //draw the playing board
 
             // Start offset by 12 so board is kinda centered
@@ -393,14 +392,13 @@ window.Chess_Scene = window.classes.Chess_Scene =
 //make all pieces plastic
 
         //draw pawn
-        draw_pawn(graphics_state, model_transform){
-
-
+        draw_pawn(graphics_state, model_transform, side){
+            //create base with flattened sphere - draw at center of square
 
         }
 
         //draw rook
-        draw_rook(graphics_state, model_transform){
+        draw_rook(graphics_state, model_transform, side){
 
 
 
@@ -408,7 +406,7 @@ window.Chess_Scene = window.classes.Chess_Scene =
 
 
         //draw bishop
-        draw_bishop(graphics_state, model_transform){
+        draw_bishop(graphics_state, model_transform, side){
 
 
 
@@ -416,7 +414,7 @@ window.Chess_Scene = window.classes.Chess_Scene =
 
 
         //draw knight
-        draw_knight(graphics_state, model_transform){
+        draw_knight(graphics_state, model_transform, side){
 
 
 
@@ -424,7 +422,7 @@ window.Chess_Scene = window.classes.Chess_Scene =
 
 
         //draw queen
-        draw_queen(graphics_state, model_transform){
+        draw_queen(graphics_state, model_transform, side){
 
 
 
@@ -432,7 +430,7 @@ window.Chess_Scene = window.classes.Chess_Scene =
 
 
         //draw king
-        draw_king(graphics_state, model_transform){
+        draw_king(graphics_state, model_transform, side){
 
 
 
@@ -444,11 +442,103 @@ window.Chess_Scene = window.classes.Chess_Scene =
 
         //sets up chess board with all pieces on both sides
         initialize_game(graphics_state){
-            //filler until further developed
-            let model_transform = Mat4.identity();
-            model_transform = model_transform.times(Mat4.translation([-12, 6, -12]));
-            this.shapes.ball.draw(graphics_state, model_transform, this.board.override({color: this.whitecolor}));
+
+            //define position constants
+            let y = 2;
+
+            //z "rows" of teams
+            let black_pawn_z = 3;
+            let black_z = 5;
+            let white_pawn_z = -7;
+            let white_z = -9;
+
+            //x positions of all the pieces
+            let rook_x = -9;    let rook2_x = 5;
+            let knight_x = -7;  let knight2_x = 3;
+            let bish_x = -5;    let bish2_x = 1;
+            let queen_x = -3;
+            let king_x = -1;
+
+
+                                    //PAWNS
+            //initialize black pawns
+            let pawn_pos = Mat4.identity().times(Mat4.translation([-9,y,black_pawn_z]));
+            for (let i = 0; i < 8; i++){
+                this.draw_pawn(graphics_state, pawn_pos, "black");
+                pawn_pos = pawn_pos.times(Mat4.translation([2,0,0]));
+            }
+
+            //initialize white pawns
+            pawn_pos = Mat4.identity().times(Mat4.translation([-9,y,white_pawn_z]));
+            for (let i = 0; i < 8; i++){
+                this.draw_pawn(graphics_state, pawn_pos, "white");
+                pawn_pos = pawn_pos.times(Mat4.translation([2,0,0]));
+            }
+
+                                    //ROOKS
+            //initialize black rooks
+            let rook_pos = Mat4.identity().times(Mat4.translation([rook_x,y,black_z]));
+            this.draw_rook(graphics_state, rook_pos, "black");
+            rook_pos = Mat4.identity().times(Mat4.translation([rook2_x,y,black_z]));
+            this.draw_rook(graphics_state, rook_pos, "black");
+
+            //initialize white rooks
+            rook_pos = Mat4.identity().times(Mat4.translation([rook_x,y,white_z]));
+            this.draw_rook(graphics_state, rook_pos, "white");
+            rook_pos = Mat4.identity().times(Mat4.translation([rook2_x,y,white_z]));
+            this.draw_rook(graphics_state, rook_pos, "white");
+
+
+                                    //KNIGHTS
+            //initialize black knights
+            let knight_pos = Mat4.identity().times(Mat4.translation([knight_x,y,black_z]));
+            this.draw_knight(graphics_state, knight_pos, "black");
+            knight_pos = Mat4.identity().times(Mat4.translation([knight2_x,y,black_z]));
+            this.draw_knight(graphics_state, knight_pos, "black");
+
+            //initialize white knights
+            knight_pos = Mat4.identity().times(Mat4.translation([knight_x,y,white_z]));
+            this.draw_knight(graphics_state, knight_pos, "white");
+            knight_pos = Mat4.identity().times(Mat4.translation([knight2_x,y,white_z]));
+            this.draw_knight(graphics_state, knight_pos, "white");
+
+
+                                    //BISHOPS
+            //initialize black bishops
+            let bish_pos = Mat4.identity().times(Mat4.translation([bish_x,y,black_z]));
+            this.draw_bishop(graphics_state, bish_pos, "black");
+            bish_pos = Mat4.identity().times(Mat4.translation([bish2_x,y,black_z]));
+            this.draw_bishop(graphics_state, bish_pos, "black");
+
+            //initialize white bishops
+            bish_pos = Mat4.identity().times(Mat4.translation([bish_x,y,white_z]));
+            this.draw_bishop(graphics_state, bish_pos, "white");
+            bish_pos = Mat4.identity().times(Mat4.translation([bish2_x,y,white_z]));
+            this.draw_bishop(graphics_state, bish_pos, "white");
+
+
+                                    //QUEENS
+            //initialize black queen
+            let queen_pos = Mat4.identity().times(Mat4.translation([queen_x,y,black_z]));
+            this.draw_queen(graphics_state, queen_pos, "black");
+
+            //initialize white queen
+            queen_pos = Mat4.identity().times(Mat4.translation([queen_x,y,white_z]));
+            this.draw_queen(graphics_state, queen_pos, "white");
+
+
+                                    //KINGS
+            //initialize black king
+            let king_pos = Mat4.identity().times(Mat4.translation([king_x,y,black_z]));
+            this.draw_king(graphics_state, king_pos, "black");
+
+            //initialize white king
+            king_pos = Mat4.identity().times(Mat4.translation([king_x,y,white_z]));
+            this.draw_king(graphics_state, king_pos, "white");
+            
         }
+
+        //play(graphics_state){}
 
 
 
@@ -456,15 +546,18 @@ window.Chess_Scene = window.classes.Chess_Scene =
 //DISPLAY FUNCTION
 
         display(graphics_state) {
+
             graphics_state.lights = this.lights;        // Use the lights stored in this.lights.
 
             let model_transform = Mat4.identity();
 
-            // TODO:  Draw your entire scene here.  Use this.draw_box( graphics_state, model_transform ) to call your helper.
+            // Draw chess board and set the camera
             
             this.draw_board(graphics_state, model_transform);
             
             this.handle_view(graphics_state);
+
+            // Play the chess game
 
             this.initialize_game(graphics_state);
 
