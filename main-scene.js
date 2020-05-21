@@ -434,8 +434,15 @@ window.Assignment_Two_Scene = window.classes.Assignment_Two_Scene =
         draw_box(graphics_state, model_transform, i) {
             // TODO:  Helper function for requirement 3 (see hint).
             //        This should make changes to the model_transform matrix, draw the next box, and return the newest model_transform.
-            const curr = this.colors[i];
-            this.shapes.box.draw(graphics_state, model_transform, this.plastic.override({color: curr}));
+            let color = Color.of(0,1,0,1);
+            if (i % 2 == 0) {
+                color = Color.of(0,0,0,1);
+            } else {
+                color = Color.of(1,1,1,1);
+            }
+            
+            this.shapes.box.draw(graphics_state, model_transform, this.plastic.override({color: color}));
+            
             return model_transform;
         }
 
@@ -458,60 +465,22 @@ window.Assignment_Two_Scene = window.classes.Assignment_Two_Scene =
 
             // TODO:  Draw your entire scene here.  Use this.draw_box( graphics_state, model_transform ) to call your helper.
 
-            const t = this.t = graphics_state.animation_time / 1000;
+            // Start offset by 12 so board is kinda centered
+            model_transform = model_transform.times(Mat4.translation([-10, 0, -10]));
 
-            //if change color button is hit, shuffle colors
-            if (this.set_colors){
-                this.next_color = (this.next_color + 3) % 5;
+            for(let i = 0; i < 8; i++) {
+                for (let j=0; j < 8; j++) {
+                    // Scale down by half
+                    model_transform = model_transform.times(Mat4.scale(Vec.of( 1, 0.5, 1 )))
+                    // Draw
+                    this.draw_box(graphics_state, model_transform, i+j);
+                    // Scale back by 2 so next square isn't messed up
+                    model_transform = model_transform.times(Mat4.scale(Vec.of( 1, 2, 1 )))
+                    model_transform = model_transform.times(Mat4.translation([2, 0, 0]));
+                }
+                model_transform = model_transform.times(Mat4.translation([-16, 0, 2]));
             }
 
-            if (this.out) {
-                //create 6 boxes stacked on top of each other
-                for (var i = 0; i < 6; i++){   
-
-                    if (i == 0){
-                        this.draw_box(graphics_state, model_transform, i);
-                    } else {
-                        if (!this.still){
-                        
-                            model_transform = model_transform.times(Mat4.translation([-1, 1, 0]))
-                                .times(Mat4.rotation(this.angle(t), Vec.of(0, 0, 1)))
-                                .times(Mat4.translation([1, 1, 0]));
-                        } else {
-                            
-                            model_transform = model_transform.times(Mat4.translation([-1, 1, 0]))
-                                .times(Mat4.rotation(this.curr_angle, Vec.of(0, 0, 1)))
-                                .times(Mat4.translation([1, 1, 0]));
-                        }
-
-                        this.draw_outline(graphics_state, model_transform);
-                    }   
-                }
-            } else if (this.out == false){
-                //create 6 boxes stacked on top of each other
-                for (var i = 0; i < 6; i++){
-                    //stack them on top of each other
-                    if (i != 0) {
-                        if (!this.still){
-                            model_transform = model_transform.times(Mat4.translation([-1, 1, 0]))
-                                .times(Mat4.rotation(this.angle(t), Vec.of(0, 0, 1)))
-                                .times(Mat4.translation([1, 1, 0]));
-                        }
-                        else {
-                            model_transform = model_transform.times(Mat4.translation([-1, 1, 0]))
-                                .times(Mat4.rotation(this.curr_angle, Vec.of(0, 0, 1)))
-                                .times(Mat4.translation([1, 1, 0]));
-                        }
-
-                        this.draw_box(graphics_state, model_transform, i);
-
-                    } else {
-                        this.draw_box(graphics_state, model_transform, i);
-                    }
-                    
-                }
-
-            }
         }
     };
 
