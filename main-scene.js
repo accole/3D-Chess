@@ -445,17 +445,100 @@ window.Chess_Scene = window.classes.Chess_Scene =
 
         //draw rook
         draw_rook(graphics_state, model_transform, side){
+            //make a base
+            let base = model_transform.times(Mat4.scale(Vec.of(0.65, 0.3, 0.65)));
+            base = base.times(Mat4.translation([0, -2, 0]));
 
+            let basering = model_transform.times(Mat4.scale(Vec.of(0.55, 0.25, 0.55)));
+            basering = basering.times(Mat4.translation([0, -1, 0]));
 
+            let mid = model_transform.times(Mat4.scale(Vec.of( 0.35, 0.75, 0.35)));
+            mid = mid.times(Mat4.translation([0,0,0]));
 
+            let midring = model_transform.times(Mat4.scale(Vec.of( 0.5, .25, 0.5)));
+            midring = midring.times(Mat4.translation([0,2,0]));
+
+            let edge1 = model_transform.times(Mat4.scale(Vec.of( 0.23, .45, 0.05)));
+            let edge2 = edge1;
+            let edge3 = model_transform.times(Mat4.scale(Vec.of( 0.05, .45, 0.23)));;
+            let edge4 = edge3;
+
+            edge1 = edge1.times(Mat4.translation([0, 2.5, 7.6]));
+            edge2 = edge2.times(Mat4.translation([0, 2.5, -7.6]));
+            edge3 = edge3.times(Mat4.translation([7.6, 2.5, 0]));
+            edge4 = edge4.times(Mat4.translation([-7.6, 2.5, 0]));
+
+            if (side == "white"){
+                this.shapes.ball.draw(graphics_state, base, this.board.override({color: this.piece_color_white}));
+                this.shapes.ball.draw(graphics_state, basering, this.board.override({color: this.piece_color_white}));
+                this.shapes.ball.draw(graphics_state, mid, this.board.override({color: this.piece_color_white}));
+                this.shapes.ball.draw(graphics_state, midring, this.board.override({color: this.piece_color_white}));
+                midring = midring.times(Mat4.translation([0,0.75,0]));
+                this.shapes.ball.draw(graphics_state, midring, this.board.override({color: this.piece_color_white}));
+                midring = midring.times(Mat4.translation([0,0.75,0]));
+                this.shapes.ball.draw(graphics_state, midring, this.board.override({color: this.piece_color_white}));
+                midring = midring.times(Mat4.translation([0,0.75,0]));
+                this.shapes.ball.draw(graphics_state, midring, this.board.override({color: this.piece_color_white}));
+                this.shapes.box.draw(graphics_state, edge1, this.board.override({color: this.piece_color_white}));
+                this.shapes.box.draw(graphics_state, edge2, this.board.override({color: this.piece_color_white}));
+                this.shapes.box.draw(graphics_state, edge3, this.board.override({color: this.piece_color_white}));
+                this.shapes.box.draw(graphics_state, edge4, this.board.override({color: this.piece_color_white}));
+            } else {
+                this.shapes.ball.draw(graphics_state, base, this.board.override({color: this.piece_color_black}));
+                this.shapes.ball.draw(graphics_state, basering, this.board.override({color: this.piece_color_black}));
+                this.shapes.ball.draw(graphics_state, mid, this.board.override({color: this.piece_color_black}));
+                this.shapes.ball.draw(graphics_state, midring, this.board.override({color: this.piece_color_black}));
+                midring = midring.times(Mat4.translation([0,0.75,0]));
+                this.shapes.ball.draw(graphics_state, midring, this.board.override({color: this.piece_color_black}));
+                midring = midring.times(Mat4.translation([0,0.75,0]));
+                this.shapes.ball.draw(graphics_state, midring, this.board.override({color: this.piece_color_black}));
+                midring = midring.times(Mat4.translation([0,0.75,0]));
+                this.shapes.ball.draw(graphics_state, midring, this.board.override({color: this.piece_color_black}));
+                this.shapes.box.draw(graphics_state, edge1, this.board.override({color: this.piece_color_black}));
+                this.shapes.box.draw(graphics_state, edge2, this.board.override({color: this.piece_color_black}));
+                this.shapes.box.draw(graphics_state, edge3, this.board.override({color: this.piece_color_black}));
+                this.shapes.box.draw(graphics_state, edge4, this.board.override({color: this.piece_color_black}));
+            }    
         }
 
 
         //draw bishop
         draw_bishop(graphics_state, model_transform, side){
+            //make a base
+            let base = model_transform.times(Mat4.scale(Vec.of(0.65, 0.3, 0.65)));
+            base = base.times(Mat4.translation([0, -2, 0]));
+
+            let basering = model_transform.times(Mat4.scale(Vec.of(0.55, 0.25, 0.55)));
+            basering = basering.times(Mat4.translation([0, -1, 0]));
+
+            let mid = model_transform.times(Mat4.scale(Vec.of( 0.35, 0.75, 0.35)));
+            mid = mid.times(Mat4.translation([0,0,0]));
+
+            let midring = model_transform.times(Mat4.scale(Vec.of( 0.45, .2, 0.45)));
+            midring = midring.times(Mat4.translation([0,2.55,0]));
+
+            let top = model_transform.times(Mat4.scale(Vec.of( 0.35, .7, 0.35)));
+            top = top.times(Mat4.translation([0,1.7,0]));
+
+            let ball = model_transform.times(Mat4.scale(Vec.of( 0.15, .15, 0.15)));
+            ball = ball.times(Mat4.translation([0,13,0]));
 
 
-
+            if (side == "white"){
+                this.shapes.ball.draw(graphics_state, base, this.board.override({color: this.piece_color_white}));
+                this.shapes.ball.draw(graphics_state, basering, this.board.override({color: this.piece_color_white}));
+                this.shapes.ball.draw(graphics_state, mid, this.board.override({color: this.piece_color_white}));
+                this.shapes.ball.draw(graphics_state, midring, this.board.override({color: this.piece_color_white}));
+                this.shapes.ball.draw(graphics_state, top, this.board.override({color: this.piece_color_white}));
+                this.shapes.ball.draw(graphics_state, ball, this.board.override({color: this.piece_color_white}));
+            } else {
+                this.shapes.ball.draw(graphics_state, base, this.board.override({color: this.piece_color_black}));
+                this.shapes.ball.draw(graphics_state, basering, this.board.override({color: this.piece_color_black}));
+                this.shapes.ball.draw(graphics_state, mid, this.board.override({color: this.piece_color_black}));
+                this.shapes.ball.draw(graphics_state, midring, this.board.override({color: this.piece_color_black}));
+                this.shapes.ball.draw(graphics_state, top, this.board.override({color: this.piece_color_black}));
+                this.shapes.ball.draw(graphics_state, ball, this.board.override({color: this.piece_color_black}));
+            }
         }
 
 
@@ -477,9 +560,71 @@ window.Chess_Scene = window.classes.Chess_Scene =
 
         //draw king
         draw_king(graphics_state, model_transform, side){
+            //make a base
+            let base = model_transform.times(Mat4.scale(Vec.of(0.65, 0.3, 0.65)));
+            base = base.times(Mat4.translation([0, -2, 0]));
 
+            let basering = model_transform.times(Mat4.scale(Vec.of(0.55, 0.25, 0.55)));
+            basering = basering.times(Mat4.translation([0, -1, 0]));
 
+            let mid = model_transform.times(Mat4.scale(Vec.of( 0.35, 0.75, 0.35)));
+            mid = mid.times(Mat4.translation([0,0,0]));
 
+            let midring = model_transform.times(Mat4.scale(Vec.of( 0.5, .25, 0.5)));
+            midring = midring.times(Mat4.translation([0,2,0]));
+
+            if (side == "white"){
+                this.shapes.ball.draw(graphics_state, base, this.board.override({color: this.piece_color_white}));
+                this.shapes.ball.draw(graphics_state, basering, this.board.override({color: this.piece_color_white}));
+                this.shapes.ball.draw(graphics_state, mid, this.board.override({color: this.piece_color_white}));
+                //make thick ring
+                this.shapes.ball.draw(graphics_state, midring, this.board.override({color: this.piece_color_white}));
+                midring = midring.times(Mat4.translation([0,0.6,0]));
+                this.shapes.ball.draw(graphics_state, midring, this.board.override({color: this.piece_color_white}));
+                midring = midring.times(Mat4.translation([0,0.6,0]));
+                this.shapes.ball.draw(graphics_state, midring, this.board.override({color: this.piece_color_white}));
+                midring = midring.times(Mat4.translation([0,0.6,0]));
+                this.shapes.ball.draw(graphics_state, midring, this.board.override({color: this.piece_color_white}));
+                //make second body
+                mid = mid.times(Mat4.translation([0,1.5,0]));
+                this.shapes.ball.draw(graphics_state, mid, this.board.override({color: this.piece_color_white}));
+                //another thick ring
+                midring = midring.times(Mat4.translation([0,3.0,0]));
+                midring = midring.times(Mat4.scale([0.75,1,0.75]));
+                this.shapes.ball.draw(graphics_state, midring, this.board.override({color: this.piece_color_white}));
+                //draw cross at the top of the last ring
+                let edge1 = midring.times(Mat4.scale([0.65, 0.2, 0.2]));
+                edge1 = edge1.times(Mat4.translation([0,10,0]));
+                this.shapes.box.draw(graphics_state, edge1, this.board.override({color: this.piece_color_white}));
+                let edge2 = midring.times(Mat4.scale([0.2, 1.5, 0.2]));
+                edge2 = edge2.times(Mat4.translation([0,1,0]));
+                this.shapes.box.draw(graphics_state, edge2, this.board.override({color: this.piece_color_white}));
+            } else {
+                this.shapes.ball.draw(graphics_state, base, this.board.override({color: this.piece_color_black}));
+                this.shapes.ball.draw(graphics_state, basering, this.board.override({color: this.piece_color_black}));
+                this.shapes.ball.draw(graphics_state, mid, this.board.override({color: this.piece_color_black}));
+                this.shapes.ball.draw(graphics_state, midring, this.board.override({color: this.piece_color_black}));
+                midring = midring.times(Mat4.translation([0,0.6,0]));
+                this.shapes.ball.draw(graphics_state, midring, this.board.override({color: this.piece_color_black}));
+                midring = midring.times(Mat4.translation([0,0.6,0]));
+                this.shapes.ball.draw(graphics_state, midring, this.board.override({color: this.piece_color_black}));
+                midring = midring.times(Mat4.translation([0,0.6,0]));
+                this.shapes.ball.draw(graphics_state, midring, this.board.override({color: this.piece_color_black}));
+                //make second body
+                mid = mid.times(Mat4.translation([0,1.5,0]));
+                this.shapes.ball.draw(graphics_state, mid, this.board.override({color: this.piece_color_black}));
+                //another thick ring
+                midring = midring.times(Mat4.translation([0,3.0,0]));
+                midring = midring.times(Mat4.scale([0.75,1,0.75]));
+                this.shapes.ball.draw(graphics_state, midring, this.board.override({color: this.piece_color_black}));
+                //draw cross at the top of the last ring
+                let edge1 = midring.times(Mat4.scale([0.65, 0.2, 0.2]));
+                edge1 = edge1.times(Mat4.translation([0,10,0]));
+                this.shapes.box.draw(graphics_state, edge1, this.board.override({color: this.piece_color_black}));
+                let edge2 = midring.times(Mat4.scale([0.2, 1.5, 0.2]));
+                edge2 = edge2.times(Mat4.translation([0,1,0]));
+                this.shapes.box.draw(graphics_state, edge2, this.board.override({color: this.piece_color_black}));
+            }    
         }
 
 
@@ -605,7 +750,9 @@ window.Chess_Scene = window.classes.Chess_Scene =
 
             // Play the chess game
 
+            //if (!this.playing) {
             this.initialize_game(graphics_state);
+            //}
 
             //this.play_game(graphics_state);
         }
