@@ -93,8 +93,16 @@ window.Chess_Scene = window.classes.Chess_Scene =
                 diffusivity: .4,
                 specularity: 0.2
             });
+
+            //make wood Material to try
+            this.wood_mat = context.get_instance(Phong_Shader).material(Color.of(0,0,0,1), {
+                    ambient: 0.4, texture: context.get_instance( "assets/lightwood.png", true )});
+
             this.plastic = this.board.override({ambient: 1, specularity: .6});
-            this.lights = [new Light(Vec.of(0, 5, 5, 1), Color.of(1, .4, 1, 1), 100000)];
+            //added more lights
+            this.lights = [new Light(Vec.of(0, 5, 5, 1), Color.of(1, 1, 1, 1), 100000), 
+                           new Light(Vec.of(-2, 72, -2, 1), Color.of(1, 1, 1, 1), 100000),
+                           new Light(Vec.of(-5, 5, 0, 1), Color.of(1, 1, 1, 1), 100000)];
 
 
             //define colors
@@ -158,19 +166,23 @@ window.Chess_Scene = window.classes.Chess_Scene =
             if (this.wood) {
                 if (i % 2 == 0) {
                     color = this.blackcolor;
+                    //this.shapes.box.draw(graphics_state, model_transform, this.board.override({color: color}));
                 } else {
                     color = this.woodcolor;
+                    //this.shapes.box.draw(graphics_state, model_transform, this.wood_mat);
                 }
+                //this.shapes.box.draw(graphics_state, model_transform, this.wood_mat);
             } else {
                 if (i % 2 == 0) {
                     color = this.blackcolor;
                 } else {
                     color = this.whitecolor;
                 }
+                //this.shapes.box.draw(graphics_state, model_transform, this.board.override({color: color}));
             }
             
             this.shapes.box.draw(graphics_state, model_transform, this.board.override({color: color}));
-            
+
             return model_transform;
         }
 
@@ -552,9 +564,69 @@ window.Chess_Scene = window.classes.Chess_Scene =
 
         //draw queen
         draw_queen(graphics_state, model_transform, side){
+                //make a base
+                let base = model_transform.times(Mat4.scale(Vec.of(0.65, 0.3, 0.65)));
+                base = base.times(Mat4.translation([0, -2, 0]));
 
+                let basering = model_transform.times(Mat4.scale(Vec.of(0.55, 0.25, 0.55)));
+                basering = basering.times(Mat4.translation([0, -1, 0]));
 
+                let mid = model_transform.times(Mat4.scale(Vec.of( 0.35, 0.75, 0.35)));
+                mid = mid.times(Mat4.translation([0,0,0]));
 
+                let midring = model_transform.times(Mat4.scale(Vec.of( 0.45, .25, 0.45)));
+                midring = midring.times(Mat4.translation([0,4.5,0]));
+
+                let belt = model_transform.times(Mat4.scale(Vec.of( 0.45, .2, 0.45)));
+                belt = belt.times(Mat4.translation([0,2.55,0]));
+
+                let head = model_transform.times(Mat4.scale(Vec.of( 0.33, 0.25, 0.33)));
+                head = head.times(Mat4.translation([0,7.5,0]));
+
+                let ball = model_transform.times(Mat4.scale(Vec.of( 0.15, .15, 0.15)));
+                ball = ball.times(Mat4.translation([0,14.75,0]));
+
+                if (side == "white"){
+                        this.shapes.ball.draw(graphics_state, base, this.board.override({color: this.piece_color_white}));
+                        this.shapes.ball.draw(graphics_state, basering, this.board.override({color: this.piece_color_white}));
+                        this.shapes.ball.draw(graphics_state, mid, this.board.override({color: this.piece_color_white}));
+                        this.shapes.ball.draw(graphics_state, midring, this.board.override({color: this.piece_color_white}));
+                        this.shapes.ball.draw(graphics_state, belt, this.board.override({color: this.piece_color_white}));
+
+                        //make thicker ring
+                        midring = midring.times(Mat4.translation([0,0.6,0]));
+                        this.shapes.ball.draw(graphics_state, midring, this.board.override({color: this.piece_color_white}));
+                        midring = midring.times(Mat4.translation([0,0.6,0]));
+                        this.shapes.ball.draw(graphics_state, midring, this.board.override({color: this.piece_color_white}));
+
+                        //make second body
+                        mid = mid.times(Mat4.translation([0,1.5,0]));
+                        this.shapes.ball.draw(graphics_state, mid, this.board.override({color: this.piece_color_white}));
+
+                        //top of queen
+                        this.shapes.ball.draw(graphics_state, head, this.board.override({color: this.piece_color_white}));
+                        this.shapes.ball.draw(graphics_state, ball, this.board.override({color: this.piece_color_white}));
+                } else {
+                        this.shapes.ball.draw(graphics_state, base, this.board.override({color: this.piece_color_black}));
+                        this.shapes.ball.draw(graphics_state, basering, this.board.override({color: this.piece_color_black}));
+                        this.shapes.ball.draw(graphics_state, mid, this.board.override({color: this.piece_color_black}));
+                        this.shapes.ball.draw(graphics_state, midring, this.board.override({color: this.piece_color_black}));
+                        this.shapes.ball.draw(graphics_state, belt, this.board.override({color: this.piece_color_black}));
+
+                        //make thicker ring
+                        midring = midring.times(Mat4.translation([0,0.6,0]));
+                        this.shapes.ball.draw(graphics_state, midring, this.board.override({color: this.piece_color_black}));
+                        midring = midring.times(Mat4.translation([0,0.6,0]));
+                        this.shapes.ball.draw(graphics_state, midring, this.board.override({color: this.piece_color_black}));
+                        
+                        //make second body
+                        mid = mid.times(Mat4.translation([0,1.5,0]));
+                        this.shapes.ball.draw(graphics_state, mid, this.board.override({color: this.piece_color_black}));
+
+                        //top of queen
+                        this.shapes.ball.draw(graphics_state, head, this.board.override({color: this.piece_color_black}));
+                        this.shapes.ball.draw(graphics_state, ball, this.board.override({color: this.piece_color_black}));
+                }
         }
 
 
