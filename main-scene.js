@@ -45,9 +45,64 @@ window.Cube = window.classes.Cube =
 
             // First, specify the vertex positions -- just a bunch of points that exist at the corners of an imaginary cube.
             this.positions.push(...Vec.cast(
-                [-1, -1, -1], [1, -1, -1], [-1, -1, 1], [1, -1, 1], [1, 1, -1], [-1, 1, -1], [1, 1, 1], [-1, 1, 1],
-                [-1, -1, -1], [-1, -1, 1], [-1, 1, -1], [-1, 1, 1], [1, -1, 1], [1, -1, -1], [1, 1, 1], [1, 1, -1],
-                [-1, -1, 1], [1, -1, 1], [-1, 1, 1], [1, 1, 1], [1, -1, -1], [-1, -1, -1], [1, 1, -1], [-1, 1, -1]));
+                [-1, -1, -1], [1, -1, -1], 
+                [-1, -1, 1], [1, -1, 1], 
+                [1, 1, -1], [-1, 1, -1], 
+                [1, 1, 1], [-1, 1, 1],
+                [-1, -1, -1], [-1, -1, 1], 
+                [-1, 1, -1], [-1, 1, 1], 
+                [1, -1, 1], [1, -1, -1], 
+                [1, 1, 1], [1, 1, -1],
+                [-1, -1, 1], [1, -1, 1], 
+                [-1, 1, 1], [1, 1, 1], 
+                [1, -1, -1], [-1, -1, -1], 
+                [1, 1, -1], [-1, 1, -1]));
+            // Supply vectors that point away from eace face of the cube.  They should match up with the points in the above list
+            // Normal vectors are needed so the graphics engine can know if the shape is pointed at light or not, and color it accordingly.
+            this.normals.push(...Vec.cast(
+                [0, -1, 0], [0, -1, 0], 
+                [0, -1, 0], [0, -1, 0], 
+                [0, 1, 0], [0, 1, 0], 
+                [0, 1, 0], [0, 1, 0],
+                [-1, 0, 0], [-1, 0, 0], 
+                [-1, 0, 0], [-1, 0, 0], 
+                [1, 0, 0], [1, 0, 0], 
+                [1, 0, 0], [1, 0, 0],
+                [0, 0, 1], [0, 0, 1], 
+                [0, 0, 1], [0, 0, 1], 
+                [0, 0, -1], [0, 0, -1], 
+                [0, 0, -1], [0, 0, -1]));
+
+            // Those two lists, positions and normals, fully describe the "vertices".  What's the "i"th vertex?  Simply the combined
+            // data you get if you look up index "i" of both lists above -- a position and a normal vector, together.  Now let's
+            // tell it how to connect vertex entries into triangles.  Every three indices in this list makes one triangle:
+            this.indices.push(0, 1, 2, 1, 3, 2, 4, 5, 6, 5, 7, 6, 8, 9, 10, 9, 11, 10, 12, 13,
+                14, 13, 15, 14, 16, 17, 18, 17, 19, 18, 20, 21, 22, 21, 23, 22);
+            // It stinks to manage arrays this big.  Later we'll show code that generates these same cube vertices more automatically.
+        }
+    };
+
+
+//PRISM CLASS
+
+window.TPrism = window.classes.TPrism =
+    class TPrism extends Shape {
+        // Here's a complete, working example of a Shape subclass.  It is a blueprint for a cube.
+        constructor() {
+            super("positions", "normals"); // Name the values we'll define per each vertex.  They'll have positions and normals.
+
+            // First, specify the vertex positions -- just a bunch of points that exist at the corners of an imaginary cube.
+            this.positions.push(...Vec.cast(
+                [-1, -1, -1], [1, -1, -1],   //good
+                [-1, -1, 1], [1, -1, 1],    //good
+                [1, 1, -1], [-1, 1, -1],    //good
+                [-1, -1, -1], [-1, -1, 1],  //good
+                [1, -1, 1], [1, -1, -1],   //good
+                [-1, -1, 1], [-1, 1, -1],   //slant 1
+                [1, -1, 1], [1, 1, -1],    //slant 2
+                [-1, -1, -1], [-1, 1, -1],   //up down 1
+                [1, -1, -1], [1, 1, -1]    //up down 2
+                ));
             // Supply vectors that point away from eace face of the cube.  They should match up with the points in the above list
             // Normal vectors are needed so the graphics engine can know if the shape is pointed at light or not, and color it accordingly.
             this.normals.push(...Vec.cast(
@@ -61,6 +116,81 @@ window.Cube = window.classes.Cube =
             this.indices.push(0, 1, 2, 1, 3, 2, 4, 5, 6, 5, 7, 6, 8, 9, 10, 9, 11, 10, 12, 13,
                 14, 13, 15, 14, 16, 17, 18, 17, 19, 18, 20, 21, 22, 21, 23, 22);
             // It stinks to manage arrays this big.  Later we'll show code that generates these same cube vertices more automatically.
+        }
+    };
+
+    
+    //SQUARE OUTLINE CLASS
+
+    window.Outline = window.classes.Outline =
+    class Outline extends Shape {
+        constructor() {
+            super("positions", "colors"); // Name the values we'll define per each vertex.
+
+            //make wireframe square
+            this.positions.push(...Vec.cast(
+                [1, 1, -1], [-1, 1, -1], [1, 1, 1], [-1, 1, 1], [1, 1, -1], [1, 1, 1], [-1, 1, 1], [-1, 1, -1]));
+            
+            //color it bright purple or bright blue
+            const blue = Color.of(0, 0, 255, 1);
+
+            this.colors.push(...Vec.cast(blue, blue, blue, blue, blue, blue, blue, blue));
+
+            this.indexed = false;
+            // Do this so we won't need to define "this.indices".
+        }
+    };
+
+
+    window.Next_Outline = window.classes.Next_Outline =
+    class Next_Outline extends Shape {
+        constructor() {
+            super("positions", "colors"); // Name the values we'll define per each vertex.
+
+            //make wireframe square
+            this.positions.push(...Vec.cast(
+                [1, 1, -1], [-1, 1, -1], [1, 1, 1], [-1, 1, 1], [1, 1, -1], [1, 1, 1], [-1, 1, 1], [-1, 1, -1]));
+            
+            //color it bright purple or bright blue
+            const red = Color.of(111, 0, 0, 1);
+
+            this.colors.push(...Vec.cast(red, red, red, red, red, red, red, red));
+
+            this.indexed = false;
+            // Do this so we won't need to define "this.indices".
+        }
+    };
+        
+
+    //cube outline
+    window.Cube_Outline = window.classes.Cube_Outline =
+    class Cube_Outline extends Shape {
+        constructor() {
+            super("positions", "colors"); // Name the values we'll define per each vertex.
+
+            //  TODO (Requirement 5).
+            // When a set of lines is used in graphics, you should think of the list entries as
+            // broken down into pairs; each pair of vertices will be drawn as a line segment.
+
+            this.positions.push(...Vec.cast(
+                [-1, -1, -1], [1, -1, -1], [-1, -1, 1], [1, -1, 1], [1, 1, -1], [-1, 1, -1], [1, 1, 1], [-1, 1, 1],
+                [-1, -1, -1], [-1, -1, 1], [-1, 1, -1], [-1, 1, 1], [1, -1, 1], [1, -1, -1], [1, 1, 1], [1, 1, -1],
+                [-1, -1, 1], [1, -1, 1], [-1, 1, 1], [1, 1, 1], [1, -1, -1], [-1, -1, -1],[1, 1, -1], [-1, 1, -1],
+                //add vertical lines to box
+                [-1, -1, -1], [-1, 1, -1], [-1, -1, 1], [-1, 1, 1], [1, -1, 1], [1, 1, 1], [1, -1, -1], [1, 1, -1],));
+            
+
+            const white = Color.of(100, 100, 100, 1);
+
+            this.colors.push(...Vec.cast(
+                white, white, white, white, white, white, white, white,
+                white, white, white, white, white, white, white, white,
+                white, white, white, white, white, white, white, white,
+                //and their white colors
+                white, white, white, white, white, white, white, white));
+
+            this.indexed = false;
+            // Do this so we won't need to define "this.indices".
         }
     };
 
@@ -83,7 +213,10 @@ window.Chess_Scene = window.classes.Chess_Scene =
 
             const shapes = {
                 'box': new Cube(),
-                'ball': new Subdivision_Sphere(4)
+                'ball': new Subdivision_Sphere(4),
+                'nextwire': new Next_Outline(),
+                'wire': new Outline(),
+                'cube_wire': new Cube_Outline()
             };
             this.submit_shapes(context, shapes);
 
@@ -97,7 +230,7 @@ window.Chess_Scene = window.classes.Chess_Scene =
             //make wood Material to try
             this.wood_mat = context.get_instance(Phong_Shader).material(Color.of(0,0,0,1), {
                     ambient: 0.4, texture: context.get_instance( "assets/lightwood.png", true )});
-
+            this.out_mat = context.get_instance(Basic_Shader).material();
             this.plastic = this.board.override({ambient: 1, specularity: .6});
             //added more lights
             this.lights = [new Light(Vec.of(0, 5, 5, 1), Color.of(1, 1, 1, 1), 100000), 
@@ -110,6 +243,7 @@ window.Chess_Scene = window.classes.Chess_Scene =
             this.woodcolor = Color.of(0.85,0.556,0.35,1);
             this.whitecolor = Color.of(1,1,1,1);
             this.blackcolor = Color.of(0,0,0,1);
+            this.purple = Color.of(240, 0, 255, 1);
             //piece colors
             this.piece_color_black = Color.of(0.5,0.5,0.5,1);
             this.piece_color_white = Color.of(234/255,246/255,249/255,1);
@@ -149,6 +283,7 @@ window.Chess_Scene = window.classes.Chess_Scene =
             this.key_triggered_button("Lookaround", ["l"], () => {
                  this.lookaround = !this.lookaround;
             });
+            this.new_line();
             this.key_triggered_button("Rotate", ["r"], () => {
                  this.rotate = !this.rotate;
             });
@@ -804,6 +939,72 @@ window.Chess_Scene = window.classes.Chess_Scene =
         //play(graphics_state){}
 
 
+//---------------------------------------------------------------------------------------------------------------
+//NEXT MOVES FUNCTIONS
+
+        //tester function to try out wireframes
+        next_moves(graphics_state){
+            //z "rows" of teams
+            let black_pawn_z = 2;
+            let black_z = 4;
+            let white_pawn_z = -8;
+            let white_z = -10;
+
+            //x positions of all the pieces
+            let rook_x = -10;    let rook2_x = 4;
+            let knight_x = -8;  let knight2_x = 2;
+            let bish_x = -6;    let bish2_x = 0;
+            let queen_x = -4;
+            let king_x = -2;
+
+            //try out wireframe
+            this.light_box(graphics_state, knight_x, black_pawn_z, "curr");
+            this.light_box(graphics_state, knight_x, black_pawn_z - 2, "next");
+            this.light_box(graphics_state, knight_x, black_pawn_z - 4, "next");
+
+            //let test = Mat4.identity().times(Mat4.translation([knight_x,3,black_pawn_z-4]));
+            //this.draw_rook(graphics_state, test, "white");
+        }
+
+        //lights up wireframe of postential piece moves
+        light_box(graphics_state, x, z, color){
+            //get time
+            const t = graphics_state.animation_time / 1000, dt = graphics_state.animation_delta_time / 1000;
+
+            //get to right positions
+            let y = 1.6;
+            let model_transform = Mat4.identity().times(Mat4.translation([x,y,z]));
+
+            //draw another inside
+            let temp = model_transform.times(Mat4.scale(Vec.of( 0.875, 1.07, 0.875)));
+
+            //draw another inside
+            let temp2 = model_transform.times(Mat4.scale(Vec.of( 0.75, 1.15, 0.75)));
+
+            if (color == "curr") {
+                    //draw wireframe
+                    this.shapes.wire.draw(graphics_state, model_transform, this.out_mat, "LINES");
+                    this.shapes.wire.draw(graphics_state, temp, this.out_mat, "LINES");
+                    //this.shapes.wire.draw(graphics_state, temp2, this.out_mat, "LINES");
+            } else if (color == "next") {
+                    //draw wireframe
+                    this.shapes.nextwire.draw(graphics_state, model_transform, this.out_mat, "LINES");
+                    this.shapes.nextwire.draw(graphics_state, temp, this.out_mat, "LINES");
+                    //this.shapes.nextwire.draw(graphics_state, temp2, this.out_mat, "LINES");
+
+                    //draw oscillating circle
+                    let newMat = Mat4.identity().times(Mat4.translation([x,y,z]));
+                    //oscillate radius and scale
+                    let radius = 0.3 + 0.05 * Math.sin(.8 * Math.PI * t);
+                    newMat = newMat.times(Mat4.translation([0, 1.15, 0]));
+                    newMat = newMat.times(Mat4.scale([radius, 0.05, radius]));
+                    //draw ball
+                    this.shapes.box.draw(graphics_state, newMat, this.board.override({color: Color.of(111, 0, 0, 1)}))
+                        
+            }
+        }
+
+
 
 //-------------------------------------------------------------------------------------------------------------
 //DISPLAY FUNCTION
@@ -825,6 +1026,8 @@ window.Chess_Scene = window.classes.Chess_Scene =
             //if (!this.playing) {
             this.initialize_game(graphics_state);
             //}
+
+            this.next_moves(graphics_state);
 
             //this.play_game(graphics_state);
         }
