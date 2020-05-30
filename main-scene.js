@@ -325,6 +325,7 @@ window.Chess_Scene = window.classes.Chess_Scene =
                  this.selected = !this.selected;
             });
             this.key_triggered_button("Playing", ["p"], this.get_ex);
+            this.new_line();
             this.key_triggered_button("Pawn", ["v"], () => {
                  if (this.playing) {
                         this.curr_z = -4;
@@ -337,6 +338,10 @@ window.Chess_Scene = window.classes.Chess_Scene =
             this.key_triggered_button("Rook", ["v"], () => {
                  this.curr_z = -10;
                  this.curr_x = this.white_z;
+            });
+            this.key_triggered_button("Bishop", ["b"], () => {
+                 this.curr_z = -2;
+                 this.curr_x = -2;
             });
         }
 
@@ -1440,8 +1445,144 @@ window.Chess_Scene = window.classes.Chess_Scene =
                 //check if white or black
                 if (curr_piece[2] == 'w'){
                         //white
+                        //loop in 4 directions - stop at edges or other pieces
+                        //if piece is white, stop one before.  else include black piece
+
+                        let stop = 0;
+                        let startx = this.curr_x;
+                        let startz = this.curr_z;
+
+                        //+xz
+                        let x = startx + 2;
+                        for (let z = startz + 2; z < 6; z = z + 2){
+                                //check if a piece has been reached
+                                if (stop == 1){
+                                        z = 6;
+                                } else {
+                                        //check if new position is valid
+                                        if (this.valid_pos(x, z)){
+                                                let pos = this.get_piece(x, z);
+                                                if (pos == '_'){
+                                                        //empty - light up box
+                                                        this.light_box(graphics_state, x, z, "next");
+                                                } else if (pos[2] == 'b'){
+                                                        //enemy piece - light up box and stop
+                                                        stop = 1;
+                                                        this.light_box(graphics_state, x, z, "next");
+                                                } else if (pos[2] == 'w'){
+                                                        //friendly piece - don't light box and stop
+                                                        stop = 1;
+                                                }
+                                        } else {
+                                                //else stop
+                                                stop = 1;
+                                        }
+                                        //increment x
+                                        x = x + 2;
+                                }
+                        }
+
+
+                        //-xz
+                        stop = 0;
+                        x = startx - 2;
+                        for (let z = startz - 2; z > -12; z = z - 2){
+                                //check if a piece has been reached
+                                if (stop == 1){
+                                        z = -12;
+                                } else {
+                                        //check if new position is valid
+                                        if (this.valid_pos(x, z)){
+                                                let pos = this.get_piece(x, z);
+                                                if (pos == '_'){
+                                                        //empty - light up box
+                                                        this.light_box(graphics_state, x, z, "next");
+                                                } else if (pos[2] == 'b'){
+                                                        //enemy piece - light up box and stop
+                                                        stop = 1;
+                                                        this.light_box(graphics_state, x, z, "next");
+                                                } else if (pos[2] == 'w'){
+                                                        //friendly piece - don't light box and stop
+                                                        stop = 1;
+                                                }
+                                        } else {
+                                                //else stop
+                                                stop = 1;
+                                        }
+                                        //increment x
+                                        x = x - 2;
+                                }
+                        }
+
+                        //+x-z
+                        stop = 0;
+                        let z = startz - 2;
+                        for (x = startx + 2; x < 6; x = x + 2){
+                                //check if a piece has been reached
+                                if (stop == 1){
+                                        x = 6;
+                                } else {
+                                        //check if new position is valid
+                                        if (this.valid_pos(x, z)){
+                                                let pos = this.get_piece(x, z);
+                                                if (pos == '_'){
+                                                        //empty - light up box
+                                                        this.light_box(graphics_state, x, z, "next");
+                                                } else if (pos[2] == 'b'){
+                                                        //enemy piece - light up box and stop
+                                                        stop = 1;
+                                                        this.light_box(graphics_state, x, z, "next");
+                                                } else if (pos[2] == 'w'){
+                                                        //friendly piece - don't light box and stop
+                                                        stop = 1;
+                                                }
+                                        } else {
+                                                //else stop
+                                                stop = 1;
+                                        }
+                                        //increment z
+                                        z = z - 2;
+                                }
+                        }
+
+                        //-x+z
+                        stop = 0;
+                        z = startz + 2;
+                        for (x = startx - 2; x > -12; x = x - 2){
+                                //check if a piece has been reached
+                                if (stop == 1){
+                                        x = -12;
+                                } else {
+                                        //check if new position is valid
+                                        if (this.valid_pos(x, z)){
+                                                let pos = this.get_piece(x, z);
+                                                if (pos == '_'){
+                                                        //empty - light up box
+                                                        this.light_box(graphics_state, x, z, "next");
+                                                } else if (pos[2] == 'b'){
+                                                        //enemy piece - light up box and stop
+                                                        stop = 1;
+                                                        this.light_box(graphics_state, x, z, "next");
+                                                } else if (pos[2] == 'w'){
+                                                        //friendly piece - don't light box and stop
+                                                        stop = 1;
+                                                }
+                                        } else {
+                                                //else stop
+                                                stop = 1;
+                                        }
+                                        //increment z
+                                        z = z + 2;
+                                }
+                        }
+
+
                 } else {
                         //black
+
+
+
+
                 }
         }
 
@@ -1449,6 +1590,10 @@ window.Chess_Scene = window.classes.Chess_Scene =
                 //check if white or black
                 if (curr_piece[2] == 'w'){
                         //white
+
+
+
+
                 } else {
                         //black
                 }
