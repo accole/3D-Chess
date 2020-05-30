@@ -229,9 +229,12 @@ window.Chess_Scene = window.classes.Chess_Scene =
 
             //make wood Material to try
             this.wood_mat = context.get_instance(Phong_Shader).material(Color.of(0,0,0,1), {
-                    ambient: 0.4, texture: context.get_instance( "assets/lightwood.png", true )});
+                    ambient: 0.4, texture: context.get_instance( "./assets/lightwood.png", true )});
             this.out_mat = context.get_instance(Basic_Shader).material();
             this.plastic = this.board.override({ambient: 1, specularity: .6});
+            this.walls = context.get_instance(Phong_Shader).material(Color.of(0,0,0,1), {
+                    ambient: 0.4, texture: context.get_instance( "./assets/stone_wall.png", true )});
+
             //added more lights
             this.lights = [new Light(Vec.of(0, 5, 5, 1), Color.of(1, 1, 1, 1), 100000), 
                            new Light(Vec.of(-2, 72, -2, 1), Color.of(1, 1, 1, 1), 100000),
@@ -263,7 +266,34 @@ window.Chess_Scene = window.classes.Chess_Scene =
             this.rotate = false;
 
             //add toggle bits for buttons
+
+            //chess game variables
+            //z "rows" of teams
+            this.black_pawn_z = 2;
+            this.black_z = 4;
+            this.white_pawn_z = -8;
+            this.white_z = -10;
+
+            //x positions of all the pieces
+            this.rook_x = -10;   this.rook2_x = 4;
+            this.knight_x = -8;  this.knight2_x = 2;
+            this.bish_x = -6;    this.bish2_x = 0;
+            this.queen_x = -4;
+            this.king_x = -2;
+
+            this.curr_x = this.rook2_x;
+            this.curr_z = this.black_pawn_z;
             
+
+            //chess game - initialize to empty board
+            this.gameboard = [['_', '_', '_', '_', '_', '_', '_', '_'],
+                              ['_', '_', '_', '_', '_', '_', '_', '_'],
+                              ['_', '_', '_', '_', '_', '_', '_', '_'],
+                              ['_', '_', '_', '_', '_', '_', '_', '_'],
+                              ['_', '_', '_', '_', '_', '_', '_', '_'],
+                              ['_', '_', '_', '_', '_', '_', '_', '_'],
+                              ['_', '_', '_', '_', '_', '_', '_', '_'],
+                              ['_', '_', '_', '_', '_', '_', '_', '_']];
         }
 
 
@@ -288,6 +318,14 @@ window.Chess_Scene = window.classes.Chess_Scene =
                  this.rotate = !this.rotate;
             });
             this.key_triggered_button("Reset Game", ["g"], this.initialize_game);
+            this.key_triggered_button("Select Piece", ["s"], this.getkeys);
+        }
+
+
+        getkeys()
+        {
+            //sense for key pushes and update current piece
+
         }
 
 
@@ -857,6 +895,16 @@ window.Chess_Scene = window.classes.Chess_Scene =
             let queen_x = -4;
             let king_x = -2;
 
+            //initialize game board
+            this.gameboard = [['r-w', 'k-w', 'b-w', 'q-w', 'k-w', 'b-w', 'k-w', 'r-w'],
+                              ['p-w', 'p-w', 'p-w', 'p-w', 'p-w', 'p-w', 'p-w', 'p-w'],
+                              [  '_',   '_',   '_',   '_',   '_',   '_',   '_',   '_'],
+                              [  '_',   '_',   '_',   '_',   '_',   '_',   '_',   '_'],
+                              [  '_',   '_',   '_',   '_',   '_',   '_',   '_',   '_'],
+                              [  '_',   '_',   '_',   '_',   '_',   '_',   '_',   '_'],
+                              ['p-b', 'p-b', 'p-b', 'p-b', 'p-b', 'p-b', 'p-b', 'p-b'],
+                              ['r-b', 'k-b', 'b-b', 'q-b', 'k-b', 'b-b', 'k-b', 'r-b']];
+
 
                                     //PAWNS
             //initialize black pawns
@@ -942,28 +990,196 @@ window.Chess_Scene = window.classes.Chess_Scene =
 //---------------------------------------------------------------------------------------------------------------
 //NEXT MOVES FUNCTIONS
 
+
+        //tranlates between [x,y,z] in graphics_state to this.gameboard positions
+        translate(x, z)
+        {
+             //-10 => 0
+             //4 => 7
+             let posarr = [(x + 10)/2, (z + 10)/2];
+             return posarr;
+        }
+
+        //returns the value in gameboard at x, z graphics position 
+        get_piece(x, z)
+        {
+                let board_coord = this.translate(x, z);
+                return this.gameboard[board_coord[1]][board_coord[0]];
+        }
+
+        //checks that an x,z position is on the chess board
+        valid_pos(x, z)
+        {
+                let x_check = 0;
+                let z_check = 0;
+                //check x bounds
+                if ((x >= -10) && (x <= 4)){
+                        x_check = 1;
+                }
+                //check z bounds
+                if ((x >= -10) && (x <= 4)){
+                        z_check = 1;
+                }
+                //return true or false
+                if ((x_check == 1) && (z_check == 1)){
+                        return true;
+                } else {
+                        return false;
+                }
+
+        }
+
+        next_moves_pawns(graphics_state, curr_piece){
+                //check if white or black
+                    if (curr_piece[2] == 'w'){
+                        //white - check pieces_z + 1
+                        if (this.curr_z != 4) {
+                            //check locs right in front of pawn
+                            let next1 = this.get_piece(this.curr_x, this.curr_z + 2);
+                            if (next1 == '_'){
+                                    //empty
+                                    this.light_box(graphics_state, this.curr_x, this.curr_z + 2, "next");
+                                    //check the next space
+                                    if (this.curr_z != 2) {
+                                        let next2 = this.get_piece(this.curr_x, this.curr_z + 4);
+                                        if (next2 == '_') {
+                                                //empty
+                                                this.light_box(graphics_state, this.curr_x, this.curr_z + 4, "next");
+                                        }
+                                    }
+                            }
+                            //check locs diagonal of pawn for enemy pieces
+                            if (this.curr_x != 4){
+                                let diag1 = this.get_piece(this.curr_x + 2, this.curr_z + 2);
+                                if (diag1[2] == 'b') {
+                                         //enemy
+                                         this.light_box(graphics_state, this.curr_x + 2, this.curr_z + 2, "next");
+                                 }
+                            }
+                            if (this.curr_x != -10){
+                                let diag2 = this.get_piece(this.curr_x - 2, this.curr_z + 2);
+                                if (diag2[2] == 'b') {
+                                         //enemy
+                                         this.light_box(graphics_state, this.curr_x - 2, this.curr_z + 2, "next");
+                                 }
+                            }
+
+                        }
+                    } else {
+                        //black - check pieces_z - 1
+                        if (this.curr_z != -10) {
+                            //check locs right in front of pawn
+                            let next1 = this.get_piece(this.curr_x, this.curr_z - 2);
+                            if (next1 == '_'){
+                                    //empty
+                                    this.light_box(graphics_state, this.curr_x, this.curr_z - 2, "next");
+                                    //check the next space
+                                    if (this.curr_z != -8) {
+                                        let next2 = this.get_piece(this.curr_x, this.curr_z - 4);
+                                        if (next2 == '_') {
+                                                //empty
+                                                this.light_box(graphics_state, this.curr_x, this.curr_z - 4, "next");
+                                        }
+                                    }
+                            }
+                            //check locs diagonal of pawn for enemy pieces
+                            if (this.curr_x != 4){
+                                let diag1 = this.get_piece(this.curr_x + 2, this.curr_z - 2);
+                                if (diag1[2] == 'w') {
+                                         //enemy
+                                         this.light_box(graphics_state, this.curr_x + 2, this.curr_z - 2, "next");
+                                 }
+                            }
+                            if (this.curr_x != -10){
+                                let diag2 = this.get_piece(this.curr_x - 2, this.curr_z - 2);
+                                if (diag2[2] == 'w') {
+                                         //enemy
+                                         this.light_box(graphics_state, this.curr_x - 2, this.curr_z - 2, "next");
+                                 }
+                            }
+
+                        }
+
+                    }
+        }
+
+
+        next_moves_rooks(graphics_state, curr_piece){
+                //check if white or black
+                if (curr_piece[2] == 'w'){
+                        //white
+                } else {
+                        //black
+                }
+        }
+
+
+        next_moves_knights(graphics_state, curr_piece){
+                //check if white or black
+                if (curr_piece[2] == 'w'){
+                        //white
+                } else {
+                        //black
+                }
+        }        
+
+        next_moves_bishops(graphics_state, curr_piece){
+                //check if white or black
+                if (curr_piece[2] == 'w'){
+                        //white
+                } else {
+                        //black
+                }
+        }
+
+        next_moves_queens(graphics_state, curr_piece){
+                //check if white or black
+                if (curr_piece[2] == 'w'){
+                        //white
+                } else {
+                        //black
+                }
+        }
+
+        next_moves_kings(graphics_state, curr_piece){
+                //check if white or black
+                if (curr_piece[2] == 'w'){
+                        //white
+                } else {
+                        //black
+                }
+        }
+
         //tester function to try out wireframes
         next_moves(graphics_state){
-            //z "rows" of teams
-            let black_pawn_z = 2;
-            let black_z = 4;
-            let white_pawn_z = -8;
-            let white_z = -10;
 
-            //x positions of all the pieces
-            let rook_x = -10;    let rook2_x = 4;
-            let knight_x = -8;  let knight2_x = 2;
-            let bish_x = -6;    let bish2_x = 0;
-            let queen_x = -4;
-            let king_x = -2;
+            //light up current piece
+            this.light_box(graphics_state, this.curr_x, this.curr_z, "curr");
 
-            //try out wireframe
-            this.light_box(graphics_state, knight_x, black_pawn_z, "curr");
-            this.light_box(graphics_state, knight_x, black_pawn_z - 2, "next");
-            this.light_box(graphics_state, knight_x, black_pawn_z - 4, "next");
-
-            //let test = Mat4.identity().times(Mat4.translation([knight_x,3,black_pawn_z-4]));
-            //this.draw_rook(graphics_state, test, "white");
+            //check possible next moves of the current position only
+            let curr_piece = this.get_piece(this.curr_x, this.curr_z);
+            
+            if (curr_piece == '_'){
+                    //empty space, no next moves
+            } else if (curr_piece[0] == 'p'){
+                    //pawn
+                    this.next_moves_pawns(graphics_state, curr_piece);
+            } else if (curr_piece[0] == 'r'){
+                    //rook
+                    this.next_moves_rooks(graphics_state, curr_piece);
+            } else if (curr_piece[0] == 'k'){
+                    //knight
+                    this.next_moves_knights(graphics_state, curr_piece);
+            } else if (curr_piece[0] == 'b'){
+                    //bishop
+                    this.next_moves_bishops(graphics_state, curr_piece);
+            } else if (curr_piece[0] == 'q'){
+                    //queen
+                    this.next_moves_queens(graphics_state, curr_piece);
+            } else if (curr_piece[0] == 'k'){
+                    //king
+                    this.next_moves_kings(graphics_state, curr_piece);
+            }
         }
 
         //lights up wireframe of postential piece moves
@@ -1005,6 +1221,20 @@ window.Chess_Scene = window.classes.Chess_Scene =
         }
 
 
+//------------------------------------------------------------------------------------------------------------
+//DRAW CASTLE FUNCTIONS
+
+        draw_castle(graphics_state){
+            //draw a box with stone wall texture on it
+                
+            let model_transform = Mat4.identity().times(Mat4.translation([0,7,0]));
+
+            //this.shapes.box.draw(graphics_state, model_transform, this.board);            
+
+
+        }
+
+
 
 //-------------------------------------------------------------------------------------------------------------
 //DISPLAY FUNCTION
@@ -1014,6 +1244,10 @@ window.Chess_Scene = window.classes.Chess_Scene =
             graphics_state.lights = this.lights;        // Use the lights stored in this.lights.
 
             let model_transform = Mat4.identity();
+
+            //create the scene
+
+            this.draw_castle(graphics_state);
 
             // Draw chess board and set the camera
             
