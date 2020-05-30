@@ -266,6 +266,8 @@ window.Chess_Scene = window.classes.Chess_Scene =
             this.rotate = false;
 
             //add toggle bits for buttons
+            this.selected = false;
+            this.playing = false;
 
             //chess game variables
             //z "rows" of teams
@@ -280,7 +282,9 @@ window.Chess_Scene = window.classes.Chess_Scene =
             this.bish_x = -6;    this.bish2_x = 0;
             this.queen_x = -4;
             this.king_x = -2;
-
+            this.max = 4;
+            this.min = -10;
+            //current position
             this.curr_x = this.knight_x;
             this.curr_z = this.black_pawn_z;
             
@@ -317,15 +321,55 @@ window.Chess_Scene = window.classes.Chess_Scene =
             this.key_triggered_button("Rotate", ["r"], () => {
                  this.rotate = !this.rotate;
             });
-            this.key_triggered_button("Reset Game", ["g"], this.initialize_game);
-            this.key_triggered_button("Select Piece", ["s"], this.getkeys);
+            this.key_triggered_button("Select Piece", ["s"], () => {
+                 this.selected = !this.selected;
+            });
+            this.key_triggered_button("Playing", ["p"], this.get_ex);
+            this.key_triggered_button("Pawn", ["v"], () => {
+                 if (this.playing) {
+                        this.curr_z = -4;
+                        this.curr_x = -4;
+                 } else {
+                        this.curr_x = this.knight_x;
+                        this.curr_z = this.black_pawn_z;
+                 }
+            });
+            this.key_triggered_button("Rook", ["v"], () => {
+                 this.curr_z = -10;
+                 this.curr_x = this.white_z;
+            });
         }
 
 
-        getkeys()
+        get_ex()
         {
-            //sense for key pushes and update current piece
-
+            //FLIP BETWEEN RESET GAME AND MID GAME
+            this.playing = !this.playing;
+                 if (this.playing) {
+                        this.gameboard =
+                             [['r-w',   '_',   '_', 'q-w',   '_', 'r-w', 'a-w',   '_'],
+                              [  '_',   '_',   '_', 'p-w', 'b-w', 'p-w', 'p-w', 'p-w'],
+                              [  '_', 'p-w',   '_',   '_', 'p-w',   '_',   '_',   '_'],
+                              [  '_',   '_',   '_', 'p-b',   '_',   '_',   '_',   '_'],
+                              [  '_',   '_', 'p-b',   '_', 'b-w', 'p-b',   '_',   '_'],
+                              [  '_',   '_',   '_',   '_',   '_',   '_',   '_',   '_'],
+                              ['p-b', 'p-b',   '_', 'q-b', 'b-b',   '_', 'p-b', 'p-b'],
+                              [ '_',   '_',  'a-b', 'r-b',   '_',  '_',    '_', 'r-b']];
+                        this.curr_z = -10;
+                        this.curr_x = this.white_z;
+                 } else {
+                        this.gameboard =
+                             [['r-w', 'k-w', 'b-w', 'q-w',  'a-w', 'b-w', 'k-w', 'r-w'],
+                              ['p-w', 'p-w', 'p-w', 'p-w',  'p-w', 'p-w', 'p-w', 'p-w'],
+                              [  '_',   '_',   '_',   '_',    '_',   '_',   '_',   '_'],
+                              [  '_',   '_',   '_',   '_',    '_',   '_',   '_',   '_'],
+                              [  '_',   '_',   '_',   '_',    '_',   '_',   '_',   '_'],
+                              [  '_',   '_',   '_',   '_',    '_',   '_',   '_',   '_'],
+                              ['p-b', 'p-b', 'p-b', 'p-b',  'p-b', 'p-b', 'p-b', 'p-b'],
+                              ['r-b', 'k-b', 'b-b', 'q-b',  'a-b', 'b-b', 'k-b', 'r-b']];
+                        this.curr_z = this.black_pawn_z;
+                        this.curr_x = this.knight_x;
+                 }
         }
 
 
@@ -615,7 +659,7 @@ window.Chess_Scene = window.classes.Chess_Scene =
             let top = model_transform.times(Mat4.scale(Vec.of( 0.35, 0.35, 0.35)));
             top = top.times(Mat4.translation([0,1.5,0]));
 
-            if (side == "white"){
+            if (side == "w"){
                 this.shapes.ball.draw(graphics_state, base, this.board.override({color: this.piece_color_white}));
                 this.shapes.ball.draw(graphics_state, ring, this.board.override({color: this.piece_color_white}));
                 this.shapes.ball.draw(graphics_state, mid, this.board.override({color: this.piece_color_white}));
@@ -653,7 +697,7 @@ window.Chess_Scene = window.classes.Chess_Scene =
             edge3 = edge3.times(Mat4.translation([7.6, 2.5, 0]));
             edge4 = edge4.times(Mat4.translation([-7.6, 2.5, 0]));
 
-            if (side == "white"){
+            if (side == "w"){
                 this.shapes.ball.draw(graphics_state, base, this.board.override({color: this.piece_color_white}));
                 this.shapes.ball.draw(graphics_state, basering, this.board.override({color: this.piece_color_white}));
                 this.shapes.ball.draw(graphics_state, mid, this.board.override({color: this.piece_color_white}));
@@ -709,7 +753,7 @@ window.Chess_Scene = window.classes.Chess_Scene =
             ball = ball.times(Mat4.translation([0,13,0]));
 
 
-            if (side == "white"){
+            if (side == "w"){
                 this.shapes.ball.draw(graphics_state, base, this.board.override({color: this.piece_color_white}));
                 this.shapes.ball.draw(graphics_state, basering, this.board.override({color: this.piece_color_white}));
                 this.shapes.ball.draw(graphics_state, mid, this.board.override({color: this.piece_color_white}));
@@ -759,7 +803,7 @@ window.Chess_Scene = window.classes.Chess_Scene =
                 let ball = model_transform.times(Mat4.scale(Vec.of( 0.15, .15, 0.15)));
                 ball = ball.times(Mat4.translation([0,14.75,0]));
 
-                if (side == "white"){
+                if (side == "w"){
                         this.shapes.ball.draw(graphics_state, base, this.board.override({color: this.piece_color_white}));
                         this.shapes.ball.draw(graphics_state, basering, this.board.override({color: this.piece_color_white}));
                         this.shapes.ball.draw(graphics_state, mid, this.board.override({color: this.piece_color_white}));
@@ -818,7 +862,7 @@ window.Chess_Scene = window.classes.Chess_Scene =
             let midring = model_transform.times(Mat4.scale(Vec.of( 0.5, .25, 0.5)));
             midring = midring.times(Mat4.translation([0,2,0]));
 
-            if (side == "white"){
+            if (side == "w"){
                 this.shapes.ball.draw(graphics_state, base, this.board.override({color: this.piece_color_white}));
                 this.shapes.ball.draw(graphics_state, basering, this.board.override({color: this.piece_color_white}));
                 this.shapes.ball.draw(graphics_state, mid, this.board.override({color: this.piece_color_white}));
@@ -876,6 +920,12 @@ window.Chess_Scene = window.classes.Chess_Scene =
 //-------------------------------------------------------------------------------------------------------------
 //PLAYING GAME FUNCTIONS
 
+        //returns a translation matrix to 3D point (x,y,z)
+        pos_to_Mat(x, y, z)
+        {
+            return Mat4.identity().times(Mat4.translation([x,y,z]));
+        }
+
         //sets up chess board with all pieces on both sides
         initialize_game(graphics_state){
 
@@ -883,92 +933,132 @@ window.Chess_Scene = window.classes.Chess_Scene =
             let y = 3;
 
             //initialize game board
-            this.gameboard = [['r-w', 'k-w', 'b-w', 'q-w', 'k-w', 'b-w', 'k-w', 'r-w'],
-                              ['p-w', 'p-w', 'p-w', 'p-w', 'p-w', 'p-w', 'p-w', 'p-w'],
-                              [  '_',   '_',   '_',   '_',   '_',   '_',   '_',   '_'],
-                              [  '_',   '_',   '_',   '_',   '_',   '_',   '_',   '_'],
-                              [  '_',   '_',   '_',   '_',   '_',   '_',   '_',   '_'],
-                              [  '_',   '_',   '_',   '_',   '_',   '_',   '_',   '_'],
-                              ['p-b', 'p-b', 'p-b', 'p-b', 'p-b', 'p-b', 'p-b', 'p-b'],
-                              ['r-b', 'k-b', 'b-b', 'q-b', 'k-b', 'b-b', 'k-b', 'r-b']];
+            this.gameboard = [['r-w', 'k-w', 'b-w', 'q-w',  'a-w', 'b-w', 'k-w', 'r-w'],
+                              ['p-w', 'p-w', 'p-w', 'p-w',  'p-w', 'p-w', 'p-w', 'p-w'],
+                              [  '_',   '_',   '_',   '_',    '_',   '_',   '_',   '_'],
+                              [  '_',   '_',   '_',   '_',    '_',   '_',   '_',   '_'],
+                              [  '_',   '_',   '_',   '_',    '_',   '_',   '_',   '_'],
+                              [  '_',   '_',   '_',   '_',    '_',   '_',   '_',   '_'],
+                              ['p-b', 'p-b', 'p-b', 'p-b',  'p-b', 'p-b', 'p-b', 'p-b'],
+                              ['r-b', 'k-b', 'b-b', 'q-b',  'a-b', 'b-b', 'k-b', 'r-b']];
 
 
                                     //PAWNS
             //initialize black pawns
-            let pawn_pos = Mat4.identity().times(Mat4.translation([-10,y,this.black_pawn_z]));
+            //let pawn_pos = Mat4.identity().times(Mat4.translation([-10,y,this.black_pawn_z]));
+            let pawn_pos = this.pos_to_Mat(-10,y,this.black_pawn_z);
             for (let i = 0; i < 8; i++){
-                this.draw_pawn(graphics_state, pawn_pos, "black");
+                this.draw_pawn(graphics_state, pawn_pos, "b");
                 pawn_pos = pawn_pos.times(Mat4.translation([2,0,0]));
             }
 
             //initialize white pawns
-            pawn_pos = Mat4.identity().times(Mat4.translation([-10,y,this.white_pawn_z]));
+            pawn_pos = this.pos_to_Mat(-10,y,this.white_pawn_z);
             for (let i = 0; i < 8; i++){
-                this.draw_pawn(graphics_state, pawn_pos, "white");
+                this.draw_pawn(graphics_state, pawn_pos, "w");
                 pawn_pos = pawn_pos.times(Mat4.translation([2,0,0]));
             }
 
                                     //ROOKS
             //initialize black rooks
-            let rook_pos = Mat4.identity().times(Mat4.translation([this.rook_x,y,this.black_z]));
-            this.draw_rook(graphics_state, rook_pos, "black");
-            rook_pos = Mat4.identity().times(Mat4.translation([this.rook2_x,y,this.black_z]));
-            this.draw_rook(graphics_state, rook_pos, "black");
+            let rook_pos = this.pos_to_Mat(this.rook_x,y,this.black_z);
+            this.draw_rook(graphics_state, rook_pos, "b");
+            rook_pos = this.pos_to_Mat(this.rook2_x,y,this.black_z);
+            this.draw_rook(graphics_state, rook_pos, "b");
 
             //initialize white rooks
-            rook_pos = Mat4.identity().times(Mat4.translation([this.rook_x,y,this.white_z]));
-            this.draw_rook(graphics_state, rook_pos, "white");
-            rook_pos = Mat4.identity().times(Mat4.translation([this.rook2_x,y,this.white_z]));
-            this.draw_rook(graphics_state, rook_pos, "white");
+            rook_pos = this.pos_to_Mat(this.rook_x,y,this.white_z);
+            this.draw_rook(graphics_state, rook_pos, "w");
+            rook_pos = this.pos_to_Mat(this.rook2_x,y,this.white_z);
+            this.draw_rook(graphics_state, rook_pos, "w");
 
 
                                     //KNIGHTS
             //initialize black knights
-            let knight_pos = Mat4.identity().times(Mat4.translation([this.knight_x,y,this.black_z]));
-            this.draw_knight(graphics_state, knight_pos, "black");
-            knight_pos = Mat4.identity().times(Mat4.translation([this.knight2_x,y,this.black_z]));
-            this.draw_knight(graphics_state, knight_pos, "black");
+            let knight_pos = this.pos_to_Mat(this.knight_x,y,this.black_z);
+            this.draw_knight(graphics_state, knight_pos, "b");
+            knight_pos = this.pos_to_Mat(this.knight2_x,y,this.black_z);
+            this.draw_knight(graphics_state, knight_pos, "b");
 
             //initialize white knights
-            knight_pos = Mat4.identity().times(Mat4.translation([this.knight_x,y,this.white_z]));
-            this.draw_knight(graphics_state, knight_pos, "white");
-            knight_pos = Mat4.identity().times(Mat4.translation([this.knight2_x,y,this.white_z]));
-            this.draw_knight(graphics_state, knight_pos, "white");
+            knight_pos = this.pos_to_Mat(this.knight_x,y,this.white_z);
+            this.draw_knight(graphics_state, knight_pos, "w");
+            knight_pos = this.pos_to_Mat(this.knight2_x,y,this.white_z);
+            this.draw_knight(graphics_state, knight_pos, "w");
 
 
                                     //BISHOPS
             //initialize black bishops
-            let bish_pos = Mat4.identity().times(Mat4.translation([this.bish_x,y,this.black_z]));
-            this.draw_bishop(graphics_state, bish_pos, "black");
-            bish_pos = Mat4.identity().times(Mat4.translation([this.bish2_x,y,this.black_z]));
-            this.draw_bishop(graphics_state, bish_pos, "black");
+            let bish_pos = this.pos_to_Mat(this.bish_x,y,this.black_z);
+            this.draw_bishop(graphics_state, bish_pos, "b");
+            bish_pos = this.pos_to_Mat(this.bish2_x,y,this.black_z);
+            this.draw_bishop(graphics_state, bish_pos, "b");
 
             //initialize white bishops
-            bish_pos = Mat4.identity().times(Mat4.translation([this.bish_x,y,this.white_z]));
-            this.draw_bishop(graphics_state, bish_pos, "white");
-            bish_pos = Mat4.identity().times(Mat4.translation([this.bish2_x,y,this.white_z]));
-            this.draw_bishop(graphics_state, bish_pos, "white");
+            bish_pos = this.pos_to_Mat(this.bish_x,y,this.white_z);
+            this.draw_bishop(graphics_state, bish_pos, "w");
+            bish_pos = this.pos_to_Mat(this.bish2_x,y,this.white_z);
+            this.draw_bishop(graphics_state, bish_pos, "w");
 
 
                                     //QUEENS
             //initialize black queen
-            let queen_pos = Mat4.identity().times(Mat4.translation([this.queen_x,y,this.black_z]));
-            this.draw_queen(graphics_state, queen_pos, "black");
+            let queen_pos = this.pos_to_Mat(this.queen_x,y,this.black_z);
+            this.draw_queen(graphics_state, queen_pos, "b");
 
             //initialize white queen
-            queen_pos = Mat4.identity().times(Mat4.translation([this.queen_x,y,this.white_z]));
-            this.draw_queen(graphics_state, queen_pos, "white");
+            queen_pos = this.pos_to_Mat(this.queen_x,y,this.white_z);
+            this.draw_queen(graphics_state, queen_pos, "w");
 
 
                                     //KINGS
             //initialize black king
-            let king_pos = Mat4.identity().times(Mat4.translation([this.king_x,y,this.black_z]));
-            this.draw_king(graphics_state, king_pos, "black");
+            let king_pos = this.pos_to_Mat(this.king_x,y,this.black_z);
+            this.draw_king(graphics_state, king_pos, "b");
 
             //initialize white king
-            king_pos = Mat4.identity().times(Mat4.translation([this.king_x,y,this.white_z]));
-            this.draw_king(graphics_state, king_pos, "white");
+            king_pos = this.pos_to_Mat(this.king_x,y,this.white_z);
+            this.draw_king(graphics_state, king_pos, "w");
             
+        }
+
+
+        display_state(graphics_state)
+        {
+             //define y
+             let y = 3;
+
+             //loop through gameboard and display the pieces
+             for (let x = this.min; x <= this.max; x = x + 2){
+                  for (let z = this.min; z <= this.max; z = z + 2){
+                     let curr = this.get_piece(x, z);
+                     if (curr[0] == '_'){
+                             //nothing - empty space
+                     } else {
+                             //get the color of piece
+                             let c = curr[2];
+                             let pos = this.pos_to_Mat(x, y, z);
+                             if (curr[0] == 'p'){
+                                //pawn
+                                this.draw_pawn(graphics_state, pos, c);
+                             } else if (curr[0] == 'r'){
+                                //rook
+                                this.draw_rook(graphics_state, pos, c);
+                             } else if (curr[0] == 'k'){
+                                //knight
+                                this.draw_knight(graphics_state, pos, c);
+                             } else if (curr[0] == 'b'){
+                                //bishop
+                                this.draw_bishop(graphics_state, pos, c);
+                             } else if (curr[0] == 'q'){
+                                //queen
+                                this.draw_queen(graphics_state, pos, c);
+                             } else {
+                                //king
+                                this.draw_king(graphics_state, pos, c);
+                             }
+                   }
+             }}
         }
 
         //play(graphics_state){}
@@ -1020,7 +1110,7 @@ window.Chess_Scene = window.classes.Chess_Scene =
                 //check if white or black
                     if (curr_piece[2] == 'w'){
                         //white - check pieces_z + 1
-                        if (this.curr_z != 4) {
+                        if (this.curr_z != this.max) {
                             //check locs right in front of pawn
                             let next1 = this.get_piece(this.curr_x, this.curr_z + 2);
                             if (next1 == '_'){
@@ -1036,14 +1126,14 @@ window.Chess_Scene = window.classes.Chess_Scene =
                                     }
                             }
                             //check locs diagonal of pawn for enemy pieces
-                            if (this.curr_x != 4){
+                            if (this.curr_x != this.max){
                                 let diag1 = this.get_piece(this.curr_x + 2, this.curr_z + 2);
                                 if (diag1[2] == 'b') {
                                          //enemy
                                          this.light_box(graphics_state, this.curr_x + 2, this.curr_z + 2, "next");
                                  }
                             }
-                            if (this.curr_x != -10){
+                            if (this.curr_x != this.min){
                                 let diag2 = this.get_piece(this.curr_x - 2, this.curr_z + 2);
                                 if (diag2[2] == 'b') {
                                          //enemy
@@ -1054,7 +1144,7 @@ window.Chess_Scene = window.classes.Chess_Scene =
                         }
                     } else {
                         //black - check pieces_z - 1
-                        if (this.curr_z != -10) {
+                        if (this.curr_z != this.min) {
                             //check locs right in front of pawn
                             let next1 = this.get_piece(this.curr_x, this.curr_z - 2);
                             if (next1 == '_'){
@@ -1070,14 +1160,14 @@ window.Chess_Scene = window.classes.Chess_Scene =
                                     }
                             }
                             //check locs diagonal of pawn for enemy pieces
-                            if (this.curr_x != 4){
+                            if (this.curr_x != this.max){
                                 let diag1 = this.get_piece(this.curr_x + 2, this.curr_z - 2);
                                 if (diag1[2] == 'w') {
                                          //enemy
                                          this.light_box(graphics_state, this.curr_x + 2, this.curr_z - 2, "next");
                                  }
                             }
-                            if (this.curr_x != -10){
+                            if (this.curr_x != this.min){
                                 let diag2 = this.get_piece(this.curr_x - 2, this.curr_z - 2);
                                 if (diag2[2] == 'w') {
                                          //enemy
@@ -1391,7 +1481,7 @@ window.Chess_Scene = window.classes.Chess_Scene =
                     //rook
                     this.next_moves_rooks(graphics_state, curr_piece);
             } else if (curr_piece[0] == 'k'){
-                    //knight
+                    //knight 
                     this.next_moves_knights(graphics_state, curr_piece);
             } else if (curr_piece[0] == 'b'){
                     //bishop
@@ -1399,7 +1489,7 @@ window.Chess_Scene = window.classes.Chess_Scene =
             } else if (curr_piece[0] == 'q'){
                     //queen
                     this.next_moves_queens(graphics_state, curr_piece);
-            } else if (curr_piece[0] == 'k'){
+            } else {
                     //king
                     this.next_moves_kings(graphics_state, curr_piece);
             }
@@ -1479,12 +1569,18 @@ window.Chess_Scene = window.classes.Chess_Scene =
             this.handle_view(graphics_state);
 
             // Play the chess game
+            
+            if (this.playing) {
+                //if playing, display the current state of this.gameboard
+                this.display_state(graphics_state);
+            } else {
+                //else start from the beginning of the game and reset this.gameboard
+                this.initialize_game(graphics_state);
+            }
 
-            //if (!this.playing) {
-            this.initialize_game(graphics_state);
-            //}
-
-            this.next_moves(graphics_state);
+            if (this.selected){
+                    this.next_moves(graphics_state);
+            }
 
             //this.play_game(graphics_state);
         }
