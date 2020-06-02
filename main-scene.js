@@ -2158,18 +2158,15 @@ window.Chess_Scene = window.classes.Chess_Scene =
 
         //tester function to try out wireframes
         // When a piece is clicked, it will call this and pass the location (on the grid) of the selected piece
-        next_moves(graphics_state, coord=null){
+        // Coord is an int between 0-63, signifying where on the board it is (0 = bottom left, 7 bottom right, 63 top right)
+        next_moves(graphics_state){
 
             //light up current piece
             this.light_box(graphics_state, this.curr_x, this.curr_z, "curr");
 
             //check possible next moves of the current position only
-            var curr_piece;
-            if (coord == null) {
-                curr_piece = this.get_piece(this.curr_x, this.curr_z);
-            } else {
-
-            }
+            //console.log(this.curr_x, this.curr_z);
+            let curr_piece = this.get_piece(this.curr_x, this.curr_z);
             
             if (curr_piece == '_'){
                     //empty space, no next moves
@@ -2263,8 +2260,8 @@ window.Chess_Scene = window.classes.Chess_Scene =
                     //var canvas = document.getElementById("canvas");
                     
                     // console.log(glReadPixels(x,y,1,1,GL_RGBA));
-                    console.log("x: " + x);
-                    console.log("y: " + y);
+                    // console.log("x: " + x);
+                    // console.log("y: " + y);
 
                     // clickable looks like [[(x,y), w, h], ...]
                     for (let i = 0; i < this.clickable_areas.length; i++) {
@@ -2275,8 +2272,18 @@ window.Chess_Scene = window.classes.Chess_Scene =
                         let width = this.clickable_areas[i][2];
                         let height = this.clickable_areas[i][3];
                         if (x > clickable_x && x < clickable_x + width && y < clickable_y && y > clickable_y - height) {
-                            console.log("clicked: " + i);
-                        }  
+                            // console.log("clicked: " + i);
+                            // Get column, row
+                            let cur_x = i % 8;
+                            let cur_z = 7 - Math.floor(i / 8); 
+                            // console.log(cur_x, cur_z);
+                            // translate to 3d space
+                            this.curr_x = (cur_x * 2) - 10; // cur_x ranges from 0 to 7, curr_x is -10 to 4, left is -10
+                            this.curr_z = (cur_z * 2) - 10;
+                            console.log(this.curr_x, this.curr_z);
+                            this.selected = true;
+                            break;
+                        }
                     }
                 }
             });
