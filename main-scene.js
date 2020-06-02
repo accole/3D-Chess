@@ -85,6 +85,42 @@ window.Cube = window.classes.Cube =
 
 //PRISM CLASS
 
+window.HorsePrism = window.classes.HorsePrism =
+    class HorsePrism extends Shape {
+        // Here's a complete, working example of a Shape subclass.  It is a blueprint for a cube.
+        constructor() {
+            super("positions", "normals"); // Name the values we'll define per each vertex.  They'll have positions and normals.
+
+            // First, specify the vertex positions -- just a bunch of points that exist at the corners of an imaginary cube.
+            this.positions.push(...Vec.cast(
+                [-1, -1, -1], [1, -1, -1], [-1, -1, 1], [1, -1, 1], [1, 1, -1], [-1, 1, -1],
+                [-1, -1, -1], [-1, -1, 1], [-1, 1, -1], [-1, -1, 1], [1, -1, 1], [1, -1, -1], [1, -1, 1], [1, 1, -1],
+                [-1, -1, 1], [1, -1, 1], [1, -1, -1], [-1, -1, -1], [1, 1, -1], [-1, 1, -1], 
+                //add vertical lines to box
+                [-1, -1, -1], [-1, 1, -1], [1, -1, -1], [1, 1, -1]));
+            
+            // Supply vectors that point away from eace face of the cube.  They should match up with the points in the above list
+            // Normal vectors are needed so the graphics engine can know if the shape is pointed at light or not, and color it accordingly.
+            this.normals.push(...Vec.cast(
+                [0, -1, 0], [0, -1, 0], [0, -1, 0], [0, -1, 0], [0, 1, 0], [0, 1, 0],
+                [-1, 0, 0], [-1, 0, 0], [-1, 0, 0], [-1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0],
+                [0, 0, 1], [0, 0, 1], [0, 0, -1], [0, 0, -1], [0, 0, -1], [0, 0, -1],
+                [0, 0, -1], [0, 0, -1], [0, 0, -1], [0, 0, -1]));
+
+            // Those two lists, positions and normals, fully describe the "vertices".  What's the "i"th vertex?  Simply the combined
+            // data you get if you look up index "i" of both lists above -- a position and a normal vector, together.  Now let's
+            // tell it how to connect vertex entries into triangles.  Every three indices in this list makes one triangle:
+            this.indices.push(0, 1, 2, //good
+                              1, 3, 2, //good
+                              4, 5, 0,
+                              4, 1, 0,
+                              4, 3, 1,
+                              5, 0, 2,
+                              4, 5, 3,
+                              5, 2, 3);
+        }
+    };
+
 window.TPrism = window.classes.TPrism =
     class TPrism extends Shape {
         // Here's a complete, working example of a Shape subclass.  It is a blueprint for a cube.
@@ -216,7 +252,7 @@ window.Chess_Scene = window.classes.Chess_Scene =
                 'ball': new Subdivision_Sphere(4),
                 'nextwire': new Next_Outline(),
                 'wire': new Outline(),
-                'cube_wire': new Cube_Outline()
+                'horse': new HorsePrism()
             };
             this.submit_shapes(context, shapes);
 
@@ -326,7 +362,7 @@ window.Chess_Scene = window.classes.Chess_Scene =
             });
             this.key_triggered_button("Playing", ["p"], this.get_ex);
             this.new_line();
-            this.key_triggered_button("Pawn", ["v"], () => {
+            this.key_triggered_button("Pawn", ["0"], () => {
                  if (this.playing) {
                         this.curr_z = -4;
                         this.curr_x = -4;
@@ -343,6 +379,19 @@ window.Chess_Scene = window.classes.Chess_Scene =
                  this.curr_z = -2;
                  this.curr_x = -2;
             });
+            this.key_triggered_button("King", ["k"], () => {
+                 this.curr_z = this.black_z;
+                 this.curr_x = -6;
+            });
+            this.new_line();
+            this.key_triggered_button("Knight", ["z"], () => {
+                 this.curr_z = 0;
+                 this.curr_x = this.bish_x;
+            });
+            this.key_triggered_button("Queen", ["q"], () => {
+                 this.curr_z = this.white_z;
+                 this.curr_x = this.queen_x;
+            });
         }
 
 
@@ -354,14 +403,14 @@ window.Chess_Scene = window.classes.Chess_Scene =
                         this.gameboard =
                              [['r-w',   '_',   '_', 'q-w',   '_', 'r-w', 'a-w',   '_'],
                               [  '_',   '_',   '_', 'p-w', 'b-w', 'p-w', 'p-w', 'p-w'],
-                              [  '_', 'p-w',   '_',   '_', 'p-w',   '_',   '_',   '_'],
+                              [  '_',   '_', 'p-w',   '_', 'p-w', 'k-w',   '_',   '_'],
                               [  '_',   '_',   '_', 'p-b',   '_',   '_',   '_',   '_'],
-                              [  '_',   '_', 'p-b',   '_', 'b-w', 'p-b',   '_',   '_'],
-                              [  '_',   '_',   '_',   '_',   '_',   '_',   '_',   '_'],
+                              [  '_', 'k-w', 'p-b',   '_', 'b-w', 'p-b',   '_',   '_'],
+                              [  '_',   '_', 'k-b',   '_',   '_',   '_',   '_',   '_'],
                               ['p-b', 'p-b',   '_', 'q-b', 'b-b',   '_', 'p-b', 'p-b'],
                               [ '_',   '_',  'a-b', 'r-b',   '_',  '_',    '_', 'r-b']];
-                        this.curr_z = -10;
-                        this.curr_x = this.white_z;
+                        this.curr_z = this.white_z;
+                        this.curr_x = this.rook_x;
                  } else {
                         this.gameboard =
                              [['r-w', 'k-w', 'b-w', 'q-w',  'a-w', 'b-w', 'k-w', 'r-w'],
@@ -757,7 +806,6 @@ window.Chess_Scene = window.classes.Chess_Scene =
             let ball = model_transform.times(Mat4.scale(Vec.of( 0.15, .15, 0.15)));
             ball = ball.times(Mat4.translation([0,13,0]));
 
-
             if (side == "w"){
                 this.shapes.ball.draw(graphics_state, base, this.board.override({color: this.piece_color_white}));
                 this.shapes.ball.draw(graphics_state, basering, this.board.override({color: this.piece_color_white}));
@@ -778,9 +826,42 @@ window.Chess_Scene = window.classes.Chess_Scene =
 
         //draw knight
         draw_knight(graphics_state, model_transform, side){
+            //make a base
+            /*
+            let base = model_transform.times(Mat4.scale(Vec.of(0.65, 0.3, 0.65)));
+            base = base.times(Mat4.translation([0, -2, 0]));
 
+            let basering = model_transform.times(Mat4.scale(Vec.of(0.55, 0.25, 0.55)));
+            basering = basering.times(Mat4.translation([0, -1, 0]));
 
+            let mid = model_transform.times(Mat4.scale(Vec.of( 0.35, 0.75, 0.35)));
+            mid = mid.times(Mat4.translation([0,0,0]));
 
+            let midring = model_transform.times(Mat4.scale(Vec.of( 0.5, .25, 0.5)));
+            midring = midring.times(Mat4.translation([0,2,0]));
+
+            let horse_body = model_transform.times(Mat4.scale(Vec.of( 0.4, .5, 0.37)));
+            horse_body = horse_body.times(Mat4.translation([0,2.5,-0.2]));
+
+            if (side == "w"){
+                this.shapes.ball.draw(graphics_state, base, this.board.override({color: this.piece_color_white}));
+                this.shapes.ball.draw(graphics_state, basering, this.board.override({color: this.piece_color_white}));
+                this.shapes.ball.draw(graphics_state, mid, this.board.override({color: this.piece_color_white}));
+                //make thick ring
+                this.shapes.ball.draw(graphics_state, midring, this.board.override({color: this.piece_color_white}));
+                midring = midring.times(Mat4.translation([0,0.6,0]));
+                this.shapes.ball.draw(graphics_state, midring, this.board.override({color: this.piece_color_white}));
+                this.shapes.horse.draw(graphics_state, horse_body, this.board.override({color: this.piece_color_white}));
+            } else {
+                this.shapes.ball.draw(graphics_state, base, this.board.override({color: this.piece_color_black}));
+                this.shapes.ball.draw(graphics_state, basering, this.board.override({color: this.piece_color_black}));
+                this.shapes.ball.draw(graphics_state, mid, this.board.override({color: this.piece_color_black}));
+                this.shapes.ball.draw(graphics_state, midring, this.board.override({color: this.piece_color_black}));
+                midring = midring.times(Mat4.translation([0,0.6,0]));
+                this.shapes.ball.draw(graphics_state, midring, this.board.override({color: this.piece_color_black}));
+                this.shapes.horse.draw(graphics_state, horse_body, this.board.override({color: this.piece_color_black}));
+            }    
+            */
         }
 
 
@@ -976,7 +1057,7 @@ window.Chess_Scene = window.classes.Chess_Scene =
             this.draw_rook(graphics_state, rook_pos, "w");
             rook_pos = this.pos_to_Mat(this.rook2_x,y,this.white_z);
             this.draw_rook(graphics_state, rook_pos, "w");
-
+            
 
                                     //KNIGHTS
             //initialize black knights
@@ -1099,7 +1180,7 @@ window.Chess_Scene = window.classes.Chess_Scene =
                         x_check = 1;
                 }
                 //check z bounds
-                if ((x >= -10) && (x <= 4)){
+                if ((z >= -10) && (z <= 4)){
                         z_check = 1;
                 }
                 //return true or false
@@ -1435,9 +1516,227 @@ window.Chess_Scene = window.classes.Chess_Scene =
         next_moves_knights(graphics_state, curr_piece){
                 //check if white or black
                 if (curr_piece[2] == 'w'){
-                        //white
+                        //white - only have to check 8 spots
+
+                        let x = this.curr_x;
+                        let z = this.curr_z;
+
+                        //+xz
+                        if (this.valid_pos(x+2, z+4)){
+                                //get the piece
+                                let pos = this.get_piece(x+2, z+4);
+                                //check if white, black, or empty
+                                if (pos == '_'){
+                                      //empty - light up box
+                                      this.light_box(graphics_state, x+2, z+4, "next");
+                                } else if (pos[2] == 'b'){
+                                      //enemy piece - light up box and stop
+                                      this.light_box(graphics_state, x+2, z+4, "next");
+                                }
+                        }
+                        if (this.valid_pos(x+4, z+2)){
+                                //get the piece
+                                let pos = this.get_piece(x+4, z+2);
+                                //check if white, black, or empty
+                                if (pos == '_'){
+                                      //empty - light up box
+                                      this.light_box(graphics_state, x+4, z+2, "next");
+                                } else if (pos[2] == 'b'){
+                                      //enemy piece - light up box and stop
+                                      this.light_box(graphics_state, x+4, z+2, "next");
+                                }
+                        }
+
+                        //-xz
+                        if (this.valid_pos(x-2, z-4)){
+                                //get the piece
+                                let pos = this.get_piece(x-2, z-4);
+                                //check if white, black, or empty
+                                if (pos == '_'){
+                                      //empty - light up box
+                                      this.light_box(graphics_state, x-2, z-4, "next");
+                                } else if (pos[2] == 'b'){
+                                      //enemy piece - light up box and stop
+                                      this.light_box(graphics_state, x-2, z-4, "next");
+                                }
+                        }
+                        if (this.valid_pos(x-4, z-2)){
+                                //get the piece
+                                let pos = this.get_piece(x-4, z-2);
+                                //check if white, black, or empty
+                                if (pos == '_'){
+                                      //empty - light up box
+                                      this.light_box(graphics_state, x-4, z-2, "next");
+                                } else if (pos[2] == 'b'){
+                                      //enemy piece - light up box and stop
+                                      this.light_box(graphics_state, x-4, z-2, "next");
+                                }
+                        }
+
+
+                        //+x-z
+                        if (this.valid_pos(x+2, z-4)){
+                                //get the piece
+                                let pos = this.get_piece(x+2, z-4);
+                                //check if white, black, or empty
+                                if (pos == '_'){
+                                      //empty - light up box
+                                      this.light_box(graphics_state, x+2, z-4, "next");
+                                } else if (pos[2] == 'b'){
+                                      //enemy piece - light up box and stop
+                                      this.light_box(graphics_state, x+2, z-4, "next");
+                                }
+                        }
+                        if (this.valid_pos(x+4, z-2)){
+                                //get the piece
+                                let pos = this.get_piece(x+4, z-2);
+                                //check if white, black, or empty
+                                if (pos == '_'){
+                                      //empty - light up box
+                                      this.light_box(graphics_state, x+4, z-2, "next");
+                                } else if (pos[2] == 'b'){
+                                      //enemy piece - light up box and stop
+                                      this.light_box(graphics_state, x+4, z-2, "next");
+                                }
+                        }
+
+
+                        //-x+z
+                        if (this.valid_pos(x-2, z+4)){
+                                //get the piece
+                                let pos = this.get_piece(x-2, z+4);
+                                //check if white, black, or empty
+                                if (pos == '_'){
+                                      //empty - light up box
+                                      this.light_box(graphics_state, x-2, z+4, "next");
+                                } else if (pos[2] == 'b'){
+                                      //enemy piece - light up box and stop
+                                      this.light_box(graphics_state, x-2, z+4, "next");
+                                }
+                        }
+                        if (this.valid_pos(x-4, z+2)){
+                                //get the piece
+                                let pos = this.get_piece(x-4, z+2);
+                                //check if white, black, or empty
+                                if (pos == '_'){
+                                      //empty - light up box
+                                      this.light_box(graphics_state, x-4, z+2, "next");
+                                } else if (pos[2] == 'b'){
+                                      //enemy piece - light up box and stop
+                                      this.light_box(graphics_state, x-4, z+2, "next");
+                                }
+                        }
+
                 } else {
                         //black
+                        let x = this.curr_x;
+                        let z = this.curr_z;
+
+                        //+xz
+                        if (this.valid_pos(x+2, z+4)){
+                                //get the piece
+                                let pos = this.get_piece(x+2, z+4);
+                                //check if white, black, or empty
+                                if (pos == '_'){
+                                      //empty - light up box
+                                      this.light_box(graphics_state, x+2, z+4, "next");
+                                } else if (pos[2] == 'w'){
+                                      //enemy piece - light up box and stop
+                                      this.light_box(graphics_state, x+2, z+4, "next");
+                                }
+                        }
+                        if (this.valid_pos(x+4, z+2)){
+                                //get the piece
+                                let pos = this.get_piece(x+4, z+2);
+                                //check if white, black, or empty
+                                if (pos == '_'){
+                                      //empty - light up box
+                                      this.light_box(graphics_state, x+4, z+2, "next");
+                                } else if (pos[2] == 'w'){
+                                      //enemy piece - light up box and stop
+                                      this.light_box(graphics_state, x+4, z+2, "next");
+                                }
+                        }
+
+                        //-xz
+                        if (this.valid_pos(x-2, z-4)){
+                                //get the piece
+                                let pos = this.get_piece(x-2, z-4);
+                                //check if white, black, or empty
+                                if (pos == '_'){
+                                      //empty - light up box
+                                      this.light_box(graphics_state, x-2, z-4, "next");
+                                } else if (pos[2] == 'w'){
+                                      //enemy piece - light up box and stop
+                                      this.light_box(graphics_state, x-2, z-4, "next");
+                                }
+                        }
+                        if (this.valid_pos(x-4, z-2)){
+                                //get the piece
+                                let pos = this.get_piece(x-4, z-2);
+                                //check if white, black, or empty
+                                if (pos == '_'){
+                                      //empty - light up box
+                                      this.light_box(graphics_state, x-4, z-2, "next");
+                                } else if (pos[2] == 'w'){
+                                      //enemy piece - light up box and stop
+                                      this.light_box(graphics_state, x-4, z-2, "next");
+                                }
+                        }
+
+
+                        //+x-z
+                        if (this.valid_pos(x+2, z-4)){
+                                //get the piece
+                                let pos = this.get_piece(x+2, z-4);
+                                //check if white, black, or empty
+                                if (pos == '_'){
+                                      //empty - light up box
+                                      this.light_box(graphics_state, x+2, z-4, "next");
+                                } else if (pos[2] == 'w'){
+                                      //enemy piece - light up box and stop
+                                      this.light_box(graphics_state, x+2, z-4, "next");
+                                }
+                        }
+                        if (this.valid_pos(x+4, z-2)){
+                                //get the piece
+                                let pos = this.get_piece(x+4, z-2);
+                                //check if white, black, or empty
+                                if (pos == '_'){
+                                      //empty - light up box
+                                      this.light_box(graphics_state, x+4, z-2, "next");
+                                } else if (pos[2] == 'w'){
+                                      //enemy piece - light up box and stop
+                                      this.light_box(graphics_state, x+4, z-2, "next");
+                                }
+                        }
+
+
+                        //-x+z
+                        if (this.valid_pos(x-2, z+4)){
+                                //get the piece
+                                let pos = this.get_piece(x-2, z+4);
+                                //check if white, black, or empty
+                                if (pos == '_'){
+                                      //empty - light up box
+                                      this.light_box(graphics_state, x-2, z+4, "next");
+                                } else if (pos[2] == 'w'){
+                                      //enemy piece - light up box and stop
+                                      this.light_box(graphics_state, x-2, z+4, "next");
+                                }
+                        }
+                        if (this.valid_pos(x-4, z+2)){
+                                //get the piece
+                                let pos = this.get_piece(x-4, z+2);
+                                //check if white, black, or empty
+                                if (pos == '_'){
+                                      //empty - light up box
+                                      this.light_box(graphics_state, x-4, z+2, "next");
+                                } else if (pos[2] == 'w'){
+                                      //enemy piece - light up box and stop
+                                      this.light_box(graphics_state, x-4, z+2, "next");
+                                }
+                        }
                 }
         }        
 
@@ -1576,10 +1875,138 @@ window.Chess_Scene = window.classes.Chess_Scene =
                                 }
                         }
 
-
                 } else {
                         //black
+                        //loop in 4 directions - stop at edges or other pieces
+                        //if piece is white, stop one before.  else include black piece
 
+                        let stop = 0;
+                        let startx = this.curr_x;
+                        let startz = this.curr_z;
+
+                        //+xz
+                        let x = startx + 2;
+                        for (let z = startz + 2; z < 6; z = z + 2){
+                                //check if a piece has been reached
+                                if (stop == 1){
+                                        z = 6;
+                                } else {
+                                        //check if new position is valid
+                                        if (this.valid_pos(x, z)){
+                                                let pos = this.get_piece(x, z);
+                                                if (pos == '_'){
+                                                        //empty - light up box
+                                                        this.light_box(graphics_state, x, z, "next");
+                                                } else if (pos[2] == 'w'){
+                                                        //enemy piece - light up box and stop
+                                                        stop = 1;
+                                                        this.light_box(graphics_state, x, z, "next");
+                                                } else if (pos[2] == 'b'){
+                                                        //friendly piece - don't light box and stop
+                                                        stop = 1;
+                                                }
+                                        } else {
+                                                //else stop
+                                                stop = 1;
+                                        }
+                                        //increment x
+                                        x = x + 2;
+                                }
+                        }
+
+
+                        //-xz
+                        stop = 0;
+                        x = startx - 2;
+                        for (let z = startz - 2; z > -12; z = z - 2){
+                                //check if a piece has been reached
+                                if (stop == 1){
+                                        z = -12;
+                                } else {
+                                        //check if new position is valid
+                                        if (this.valid_pos(x, z)){
+                                                let pos = this.get_piece(x, z);
+                                                if (pos == '_'){
+                                                        //empty - light up box
+                                                        this.light_box(graphics_state, x, z, "next");
+                                                } else if (pos[2] == 'w'){
+                                                        //enemy piece - light up box and stop
+                                                        stop = 1;
+                                                        this.light_box(graphics_state, x, z, "next");
+                                                } else if (pos[2] == 'b'){
+                                                        //friendly piece - don't light box and stop
+                                                        stop = 1;
+                                                }
+                                        } else {
+                                                //else stop
+                                                stop = 1;
+                                        }
+                                        //increment x
+                                        x = x - 2;
+                                }
+                        }
+
+                        //+x-z
+                        stop = 0;
+                        let z = startz - 2;
+                        for (x = startx + 2; x < 6; x = x + 2){
+                                //check if a piece has been reached
+                                if (stop == 1){
+                                        x = 6;
+                                } else {
+                                        //check if new position is valid
+                                        if (this.valid_pos(x, z)){
+                                                let pos = this.get_piece(x, z);
+                                                if (pos == '_'){
+                                                        //empty - light up box
+                                                        this.light_box(graphics_state, x, z, "next");
+                                                } else if (pos[2] == 'w'){
+                                                        //enemy piece - light up box and stop
+                                                        stop = 1;
+                                                        this.light_box(graphics_state, x, z, "next");
+                                                } else if (pos[2] == 'b'){
+                                                        //friendly piece - don't light box and stop
+                                                        stop = 1;
+                                                }
+                                        } else {
+                                                //else stop
+                                                stop = 1;
+                                        }
+                                        //increment z
+                                        z = z - 2;
+                                }
+                        }
+
+                        //-x+z
+                        stop = 0;
+                        z = startz + 2;
+                        for (x = startx - 2; x > -12; x = x - 2){
+                                //check if a piece has been reached
+                                if (stop == 1){
+                                        x = -12;
+                                } else {
+                                        //check if new position is valid
+                                        if (this.valid_pos(x, z)){
+                                                let pos = this.get_piece(x, z);
+                                                if (pos == '_'){
+                                                        //empty - light up box
+                                                        this.light_box(graphics_state, x, z, "next");
+                                                } else if (pos[2] == 'w'){
+                                                        //enemy piece - light up box and stop
+                                                        stop = 1;
+                                                        this.light_box(graphics_state, x, z, "next");
+                                                } else if (pos[2] == 'b'){
+                                                        //friendly piece - don't light box and stop
+                                                        stop = 1;
+                                                }
+                                        } else {
+                                                //else stop
+                                                stop = 1;
+                                        }
+                                        //increment z
+                                        z = z + 2;
+                                }
+                        }
 
 
 
@@ -1587,24 +2014,61 @@ window.Chess_Scene = window.classes.Chess_Scene =
         }
 
         next_moves_queens(graphics_state, curr_piece){
-                //check if white or black
-                if (curr_piece[2] == 'w'){
-                        //white
-
-
-
-
-                } else {
-                        //black
-                }
+                //utilize bishop and rook next moves functions
+                this.next_moves_rooks(graphics_state, curr_piece);
+                this.next_moves_bishops(graphics_state, curr_piece);
         }
 
         next_moves_kings(graphics_state, curr_piece){
                 //check if white or black
                 if (curr_piece[2] == 'w'){
                         //white
+                        let x = this.curr_x;
+                        let z = this.curr_z;
+
+                        //check all the pieces directly around the king
+                        for (let i = -2; i < 4; i = i + 2){
+                                for (let j = -2; j < 4; j = j + 2){
+                                        if ((i != 0) || (j != 0)){
+                                                if (this.valid_pos(x+i, z+j)){
+                                                        //get the piece
+                                                        let pos = this.get_piece(x+i, z+j);
+                                                        //check if white, black, or empty
+                                                        if (pos == '_'){
+                                                                //empty - light up box
+                                                                this.light_box(graphics_state, x+i, z+j, "next");
+                                                        } else if (pos[2] == 'b'){
+                                                                //enemy piece - light up box and stop
+                                                                this.light_box(graphics_state, x+i, z+j, "next");
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
                 } else {
                         //black
+                        let x = this.curr_x;
+                        let z = this.curr_z;
+
+                        //check all the pieces directly around the king
+                        for (let i = -2; i < 4; i = i + 2){
+                                for (let j = -2; j < 4; j = j + 2){
+                                        if ((i != 0) || (j != 0)){
+                                                if (this.valid_pos(x+i, z+j)){
+                                                        //get the piece
+                                                        let pos = this.get_piece(x+i, z+j);
+                                                        //check if white, black, or empty
+                                                        if (pos == '_'){
+                                                                //empty - light up box
+                                                                this.light_box(graphics_state, x+i, z+j, "next");
+                                                        } else if (pos[2] == 'w'){
+                                                                //enemy piece - light up box and stop
+                                                                this.light_box(graphics_state, x+i, z+j, "next");
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
                 }
         }
 
