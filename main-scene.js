@@ -339,6 +339,10 @@ window.Chess_Scene = window.classes.Chess_Scene =
             // VARIABLES TO HELP WITH MOUSE PICKING
             this.mousedown = false;
 
+            // States of clicking; either nothing selected (false), or a piece is selected (true)
+            this.clickstate = false;
+            this.clickable_moves = [];  // This is populated by the next_moves_XXX functions to move pieces
+
             // Each "clickable area" is defined as (x, y) of bottom left corner of square,
             // then width and height of the square for easy checking
             this.clickable_areas = [
@@ -1277,6 +1281,7 @@ window.Chess_Scene = window.classes.Chess_Scene =
         }
 
         next_moves_pawns(graphics_state, curr_piece){
+            this.clickable_moves = [];
                 //check if white or black
                     if (curr_piece[2] == 'w'){
                         //white - check pieces_z + 1
@@ -1286,12 +1291,17 @@ window.Chess_Scene = window.classes.Chess_Scene =
                             if (next1 == '_'){
                                     //empty
                                     this.light_box(graphics_state, this.curr_x, this.curr_z + 2, "next");
+                                    // move is possible, let everyone know
+                                    this.clickable_moves.push([this.curr_x, this.curr_z + 2]);
                                     //check the next space
-                                    if (this.curr_z != 2) {
+                                    // if (this.curr_z != 2) {
+                                    if (this.curr_z == -8) {
                                         let next2 = this.get_piece(this.curr_x, this.curr_z + 4);
                                         if (next2 == '_') {
                                                 //empty
                                                 this.light_box(graphics_state, this.curr_x, this.curr_z + 4, "next");
+                                                // move is possible, let everyone know
+                                                this.clickable_moves.push([this.curr_x, this.curr_z + 4]);
                                         }
                                     }
                             }
@@ -1301,6 +1311,8 @@ window.Chess_Scene = window.classes.Chess_Scene =
                                 if (diag1[2] == 'b') {
                                          //enemy
                                          this.light_box(graphics_state, this.curr_x + 2, this.curr_z + 2, "next");
+                                         // move is possible, let everyone know
+                                        this.clickable_moves.push([this.curr_x + 2, this.curr_z + 2]);
                                  }
                             }
                             if (this.curr_x != this.min){
@@ -1308,6 +1320,8 @@ window.Chess_Scene = window.classes.Chess_Scene =
                                 if (diag2[2] == 'b') {
                                          //enemy
                                          this.light_box(graphics_state, this.curr_x - 2, this.curr_z + 2, "next");
+                                         // move is possible, let everyone know
+                                        this.clickable_moves.push([this.curr_x - 2, this.curr_z + 2]);
                                  }
                             }
 
@@ -1320,12 +1334,16 @@ window.Chess_Scene = window.classes.Chess_Scene =
                             if (next1 == '_'){
                                     //empty
                                     this.light_box(graphics_state, this.curr_x, this.curr_z - 2, "next");
+                                    // move is possible, let everyone know
+                                    this.clickable_moves.push([this.curr_x, this.curr_z - 2]);
                                     //check the next space
-                                    if (this.curr_z != -8) {
+                                    if (this.curr_z == 2) {
                                         let next2 = this.get_piece(this.curr_x, this.curr_z - 4);
                                         if (next2 == '_') {
                                                 //empty
                                                 this.light_box(graphics_state, this.curr_x, this.curr_z - 4, "next");
+                                                // move is possible, let everyone know
+                                                this.clickable_moves.push([this.curr_x, this.curr_z - 4]);
                                         }
                                     }
                             }
@@ -1335,6 +1353,8 @@ window.Chess_Scene = window.classes.Chess_Scene =
                                 if (diag1[2] == 'w') {
                                          //enemy
                                          this.light_box(graphics_state, this.curr_x + 2, this.curr_z - 2, "next");
+                                         // move is possible, let everyone know
+                                        this.clickable_moves.push([this.curr_x + 2, this.curr_z - 2]);
                                  }
                             }
                             if (this.curr_x != this.min){
@@ -1342,6 +1362,8 @@ window.Chess_Scene = window.classes.Chess_Scene =
                                 if (diag2[2] == 'w') {
                                          //enemy
                                          this.light_box(graphics_state, this.curr_x - 2, this.curr_z - 2, "next");
+                                         // move is possible, let everyone know
+                                        this.clickable_moves.push([this.curr_x - 2, this.curr_z - 2]);
                                  }
                             }
 
@@ -2254,14 +2276,10 @@ window.Chess_Scene = window.classes.Chess_Scene =
             document.addEventListener("mousedown", e => {
                 if(!this.mousedown) {
                     this.mousedown = true;
+                    // No piece is selected yet
                     e.preventDefault();
                     let x = e.offsetX;
                     let y = e.offsetY;
-                    //var canvas = document.getElementById("canvas");
-                    
-                    // console.log(glReadPixels(x,y,1,1,GL_RGBA));
-                    // console.log("x: " + x);
-                    // console.log("y: " + y);
 
                     // clickable looks like [[(x,y), w, h], ...]
                     for (let i = 0; i < this.clickable_areas.length; i++) {
@@ -2272,19 +2290,42 @@ window.Chess_Scene = window.classes.Chess_Scene =
                         let width = this.clickable_areas[i][2];
                         let height = this.clickable_areas[i][3];
                         if (x > clickable_x && x < clickable_x + width && y < clickable_y && y > clickable_y - height) {
-                            // console.log("clicked: " + i);
                             // Get column, row
                             let cur_x = i % 8;
                             let cur_z = 7 - Math.floor(i / 8); 
-                            // console.log(cur_x, cur_z);
-                            // translate to 3d space
-                            this.curr_x = (cur_x * 2) - 10; // cur_x ranges from 0 to 7, curr_x is -10 to 4, left is -10
-                            this.curr_z = (cur_z * 2) - 10;
-                            console.log(this.curr_x, this.curr_z);
-                            this.selected = true;
-                            break;
+                            
+                            // No piece selected atm... pick one
+                            if(this.clickstate == false) {
+                                // translate to 3d space
+                                this.curr_x = (cur_x * 2) - 10; // cur_x ranges from 0 to 7, curr_x is -10 to 4, left is -10
+                                this.curr_z = (cur_z * 2) - 10;
+                                console.log(this.curr_x, this.curr_z);
+                                let curr_piece = this.get_piece(this.curr_x, this.curr_z);
+                                // only select pieces
+                                if (curr_piece != '_') {
+                                    this.selected = true;
+                                    this.clickstate = true;
+                                }
+                                break;
+                            } else {
+                                // We're in "move the piece mode", so look at clickable_moves NOT clickable_areas
+                                // clickable moves = [[-10,-10], etc. ...] (in 3d coords)
+                                var valid_move = false;
+                                for (let i = 0; i < this.clickable_moves.length; i++) {
+                                    // Check if clicked tile is in the piece's line of sight
+                                    if ((cur_x * 2) - 10 == this.clickable_moves[i][0] && (cur_z * 2) - 10 == this.clickable_moves[i][1]) {
+                                        valid_move = true;
+                                        console.log("valid move!");
+                                        // TODO: Trigger move
+                                    }
+                                }
+                                if(!valid_move) {
+                                    this.selected = false;
+                                    this.clickstate = false;
+                                }
+                            }
                         }
-                    }
+                    }   
                 }
             });
 
@@ -2318,6 +2359,9 @@ window.Chess_Scene = window.classes.Chess_Scene =
 
             if (this.selected){
                 this.next_moves(graphics_state);
+            } else {
+                // Clear the clickable_moves array, since no piece is selected
+                this.clickable_moves = [];
             }
 
             //this.play_game(graphics_state);
