@@ -298,6 +298,88 @@ window.Chess_Scene = window.classes.Chess_Scene =
                               ['_', '_', '_', '_', '_', '_', '_', '_'],
                               ['_', '_', '_', '_', '_', '_', '_', '_'],
                               ['_', '_', '_', '_', '_', '_', '_', '_']];
+
+
+            // VARIABLES TO HELP WITH MOUSE PICKING
+            this.mousedown = false;
+
+            // Each "clickable area" is defined as (x, y) of bottom left corner of square,
+            // then width and height of the square for easy checking
+            this.clickable_areas = [
+                // Bottom row, left to right
+                [307, 414, 52, 36],   // x,y, width, height
+                [359, 414, 52, 36],
+                [411, 414, 52, 36],
+                [464, 414, 52, 36],
+                [515, 414, 52, 36],
+                [567, 414, 52, 36],
+                [619, 414, 52, 36],
+                [671, 414, 52, 36],
+                // row 2, left to right
+                [319, 374, 47, 33],   // (x,y), width, height
+                [369, 374, 47, 33],
+                [418, 374, 47, 33],
+                [467, 374, 47, 33],
+                [516, 374, 47, 33],
+                [566, 374, 47, 33],
+                [616, 374, 47, 33],
+                [665, 374, 47, 33],
+                // row 3, left to right
+                [334, 337, 45, 28],   // (x,y), width, height
+                [382, 337, 45, 28],
+                [427, 337, 45, 28],
+                [472, 337, 45, 28],
+                [518, 337, 45, 28],
+                [565, 337, 45, 28],
+                [612, 337, 45, 28],
+                [659, 337, 45, 28],
+                // row 4, left to right
+                [343, 308, 44, 27],   // (x,y), width, height
+                [386, 308, 44, 27],
+                [432, 308, 44, 27],
+                [476, 308, 44, 27],
+                [520, 308, 44, 27],
+                [564, 308, 44, 27],
+                [609, 308, 44, 27],
+                [654, 308, 44, 27],
+                // row 5, left to right
+                [350, 279, 43, 26],   // (x,y), width, height
+                [393, 279, 43, 26],
+                [435, 279, 43, 26],
+                [478, 279, 43, 26],
+                [520, 279, 43, 26],
+                [563, 279, 43, 26],
+                [606, 279, 43, 26],
+                [649, 279, 43, 26],
+                // row 6, left to right
+                [359, 252, 40, 24],   // (x,y), width, height
+                [400, 252, 40, 24],
+                [441, 252, 40, 24],
+                [481, 252, 40, 24],
+                [522, 252, 40, 24],
+                [562, 252, 40, 24],
+                [603, 252, 40, 24],
+                [645, 252, 40, 24],
+                // row 7, left to right
+                [367, 227, 38, 21],   // (x,y), width, height
+                [406, 227, 38, 21],
+                [444, 227, 38, 21],
+                [483, 227, 38, 21],
+                [522, 227, 38, 21],
+                [561, 227, 38, 21],
+                [600, 227, 38, 21],
+                [640, 227, 38, 21],
+                // row 8, left to right
+                [372, 205, 37, 20],   // (x,y), width, height
+                [410, 205, 37, 20],
+                [448, 205, 37, 20],
+                [485, 205, 37, 20],
+                [523, 205, 37, 20],
+                [561, 205, 37, 20],
+                [599, 205, 37, 20],
+                [636, 205, 37, 20],
+    
+            ];
         }
 
 
@@ -431,11 +513,13 @@ window.Chess_Scene = window.classes.Chess_Scene =
             // Start offset by 12 so board is kinda centered
             model_transform = model_transform.times(Mat4.translation([-10, 2, -10]));
 
+            // BOARD
             for(let i = 0; i < 8; i++) {
                 for (let j=0; j < 8; j++) {
                     // Scale down by half
                     model_transform = model_transform.times(Mat4.scale(Vec.of( 1, 0.5, 1 )))
                     // Draw
+                   // console.log(graphics_state.projection_transform.times(graphics_state.camera_transform).times(model_transform));
                     this.draw_box(graphics_state, model_transform, i+j);
                     // Scale back by 2 so next square isn't messed up
                     model_transform = model_transform.times(Mat4.scale(Vec.of( 1, 2, 1 )))
@@ -449,7 +533,7 @@ window.Chess_Scene = window.classes.Chess_Scene =
             //get to the outside edge
             model_transform = Mat4.identity();
             model_transform = model_transform.times(Mat4.translation([-12, 2, -10]));
-            //draw edges
+            //draw edges of board
             for(let i = 0; i < 8; i++) {
                     //get to the correct edge
                     let temp = model_transform;
@@ -1609,13 +1693,19 @@ window.Chess_Scene = window.classes.Chess_Scene =
         }
 
         //tester function to try out wireframes
-        next_moves(graphics_state){
+        // When a piece is clicked, it will call this and pass the location (on the grid) of the selected piece
+        next_moves(graphics_state, coord=null){
 
             //light up current piece
             this.light_box(graphics_state, this.curr_x, this.curr_z, "curr");
 
             //check possible next moves of the current position only
-            let curr_piece = this.get_piece(this.curr_x, this.curr_z);
+            var curr_piece;
+            if (coord == null) {
+                curr_piece = this.get_piece(this.curr_x, this.curr_z);
+            } else {
+
+            }
             
             if (curr_piece == '_'){
                     //empty space, no next moves
@@ -1698,6 +1788,38 @@ window.Chess_Scene = window.classes.Chess_Scene =
 //DISPLAY FUNCTION
 
         display(graphics_state) {
+           // const mouse_position = (e, rect = canvas.getBoundingClientRect()) =>
+               // Vec.of(e.clientX - (rect.left + rect.right) / 2, e.clientY - (rect.bottom + rect.top) / 2);
+            document.addEventListener("mousedown", e => {
+                if(!this.mousedown) {
+                    this.mousedown = true;
+                    e.preventDefault();
+                    let x = e.offsetX;
+                    let y = e.offsetY;
+                    //var canvas = document.getElementById("canvas");
+                    
+                    // console.log(glReadPixels(x,y,1,1,GL_RGBA));
+                    console.log("x: " + x);
+                    console.log("y: " + y);
+
+                    // clickable looks like [[(x,y), w, h], ...]
+                    for (let i = 0; i < this.clickable_areas.length; i++) {
+                        // for each clickable area, check if mouse x and y is within x+width and y+height
+                        //console.log(this.clickable_areas[i]);
+                        let clickable_x = this.clickable_areas[i][0];
+                        let clickable_y = this.clickable_areas[i][1];
+                        let width = this.clickable_areas[i][2];
+                        let height = this.clickable_areas[i][3];
+                        if (x > clickable_x && x < clickable_x + width && y < clickable_y && y > clickable_y - height) {
+                            console.log("clicked: " + i);
+                        }  
+                    }
+                }
+            });
+
+            document.addEventListener("mouseup", e => {
+                this.mousedown = false;
+            });
 
             graphics_state.lights = this.lights;        // Use the lights stored in this.lights.
 
@@ -1724,7 +1846,7 @@ window.Chess_Scene = window.classes.Chess_Scene =
             }
 
             if (this.selected){
-                    this.next_moves(graphics_state);
+                this.next_moves(graphics_state);
             }
 
             //this.play_game(graphics_state);
