@@ -1374,6 +1374,7 @@ window.Chess_Scene = window.classes.Chess_Scene =
 
 
         next_moves_rooks(graphics_state, curr_piece){
+            this.clickable_moves = [];
                 //check if white or black
                 if (curr_piece[2] == 'w'){
                         //white
@@ -1396,10 +1397,12 @@ window.Chess_Scene = window.classes.Chess_Scene =
                                                 if (pos == '_'){
                                                         //empty - light up box
                                                         this.light_box(graphics_state, startx, z, "next");
+                                                        this.clickable_moves.push([startx, z]);
                                                 } else if (pos[2] == 'b'){
                                                         //enemy piece - light up box and stop
                                                         stop = 1;
                                                         this.light_box(graphics_state, startx, z, "next");
+                                                        this.clickable_moves.push([startx, z]);
                                                 } else if (pos[2] == 'w'){
                                                         //friendly piece - don't light box and stop
                                                         stop = 1;
@@ -1424,10 +1427,12 @@ window.Chess_Scene = window.classes.Chess_Scene =
                                                 if (pos == '_'){
                                                         //empty - light up box
                                                         this.light_box(graphics_state, startx, z, "next");
+                                                        this.clickable_moves.push([startx, z]);
                                                 } else if (pos[2] == 'b'){
                                                         //enemy piece - light up box and stop
                                                         stop = 1;
                                                         this.light_box(graphics_state, startx, z, "next");
+                                                        this.clickable_moves.push([startx, z]);
                                                 } else if (pos[2] == 'w'){
                                                         //friendly piece - don't light box and stop
                                                         stop = 1;
@@ -1452,10 +1457,12 @@ window.Chess_Scene = window.classes.Chess_Scene =
                                                 if (pos == '_'){
                                                         //empty - light up box
                                                         this.light_box(graphics_state, x, startz, "next");
+                                                        this.clickable_moves.push([x, startz]);
                                                 } else if (pos[2] == 'b'){
                                                         //enemy piece - light up box and stop
                                                         stop = 1;
                                                         this.light_box(graphics_state, x, startz, "next");
+                                                        this.clickable_moves.push([x, startz]);
                                                 } else if (pos[2] == 'w'){
                                                         //friendly piece - don't light box and stop
                                                         stop = 1;
@@ -1480,10 +1487,12 @@ window.Chess_Scene = window.classes.Chess_Scene =
                                                 if (pos == '_'){
                                                         //empty - light up box
                                                         this.light_box(graphics_state, x, startz, "next");
+                                                        this.clickable_moves.push([x, startz]);
                                                 } else if (pos[2] == 'b'){
                                                         //enemy piece - light up box and stop
                                                         stop = 1;
                                                         this.light_box(graphics_state, x, startz, "next");
+                                                        this.clickable_moves.push([x, startz]);
                                                 } else if (pos[2] == 'w'){
                                                         //friendly piece - don't light box and stop
                                                         stop = 1;
@@ -1516,10 +1525,12 @@ window.Chess_Scene = window.classes.Chess_Scene =
                                                 if (pos == '_'){
                                                         //empty - light up box
                                                         this.light_box(graphics_state, startx, z, "next");
+                                                        this.clickable_moves.push([startx, z]);
                                                 } else if (pos[2] == 'w'){
                                                         //enemy piece - light up box and stop
                                                         stop = 1;
                                                         this.light_box(graphics_state, startx, z, "next");
+                                                        this.clickable_moves.push([startx, z]);
                                                 } else if (pos[2] == 'b'){
                                                         //friendly piece - don't light box and stop
                                                         stop = 1;
@@ -1544,10 +1555,12 @@ window.Chess_Scene = window.classes.Chess_Scene =
                                                 if (pos == '_'){
                                                         //empty - light up box
                                                         this.light_box(graphics_state, startx, z, "next");
+                                                        this.clickable_moves.push([startx, z]);
                                                 } else if (pos[2] == 'w'){
                                                         //enemy piece - light up box and stop
                                                         stop = 1;
                                                         this.light_box(graphics_state, startx, z, "next");
+                                                        this.clickable_moves.push([startx, z]);
                                                 } else if (pos[2] == 'b'){
                                                         //friendly piece - don't light box and stop
                                                         stop = 1;
@@ -1572,10 +1585,12 @@ window.Chess_Scene = window.classes.Chess_Scene =
                                                 if (pos == '_'){
                                                         //empty - light up box
                                                         this.light_box(graphics_state, x, startz, "next");
+                                                        this.clickable_moves.push([x, startz]);
                                                 } else if (pos[2] == 'w'){
                                                         //enemy piece - light up box and stop
                                                         stop = 1;
                                                         this.light_box(graphics_state, x, startz, "next");
+                                                        this.clickable_moves.push([x, startz]);
                                                 } else if (pos[2] == 'b'){
                                                         //friendly piece - don't light box and stop
                                                         stop = 1;
@@ -1600,10 +1615,12 @@ window.Chess_Scene = window.classes.Chess_Scene =
                                                 if (pos == '_'){
                                                         //empty - light up box
                                                         this.light_box(graphics_state, x, startz, "next");
+                                                        this.clickable_moves.push([x, startz]);
                                                 } else if (pos[2] == 'w'){
                                                         //enemy piece - light up box and stop
                                                         stop = 1;
                                                         this.light_box(graphics_state, x, startz, "next");
+                                                        this.clickable_moves.push([x, startz]);
                                                 } else if (pos[2] == 'b'){
                                                         //friendly piece - don't light box and stop
                                                         stop = 1;
@@ -1635,9 +1652,11 @@ window.Chess_Scene = window.classes.Chess_Scene =
                                 if (pos == '_'){
                                       //empty - light up box
                                       this.light_box(graphics_state, x+2, z+4, "next");
+                                      this.clickable_moves.push([x+2, z+4]);
                                 } else if (pos[2] == 'b'){
                                       //enemy piece - light up box and stop
                                       this.light_box(graphics_state, x+2, z+4, "next");
+                                      this.clickable_moves.push([x+2, z+4]);
                                 }
                         }
                         if (this.valid_pos(x+4, z+2)){
@@ -1647,9 +1666,11 @@ window.Chess_Scene = window.classes.Chess_Scene =
                                 if (pos == '_'){
                                       //empty - light up box
                                       this.light_box(graphics_state, x+4, z+2, "next");
+                                      this.clickable_moves.push([x+4, z+2]);
                                 } else if (pos[2] == 'b'){
                                       //enemy piece - light up box and stop
                                       this.light_box(graphics_state, x+4, z+2, "next");
+                                      this.clickable_moves.push([x+4, z+2]);
                                 }
                         }
 
@@ -1661,9 +1682,11 @@ window.Chess_Scene = window.classes.Chess_Scene =
                                 if (pos == '_'){
                                       //empty - light up box
                                       this.light_box(graphics_state, x-2, z-4, "next");
+                                      this.clickable_moves.push([x-2, z-4]);
                                 } else if (pos[2] == 'b'){
                                       //enemy piece - light up box and stop
                                       this.light_box(graphics_state, x-2, z-4, "next");
+                                      this.clickable_moves.push([x-2, z-4]);
                                 }
                         }
                         if (this.valid_pos(x-4, z-2)){
@@ -1673,9 +1696,11 @@ window.Chess_Scene = window.classes.Chess_Scene =
                                 if (pos == '_'){
                                       //empty - light up box
                                       this.light_box(graphics_state, x-4, z-2, "next");
+                                      this.clickable_moves.push([x-4, z-2]);
                                 } else if (pos[2] == 'b'){
                                       //enemy piece - light up box and stop
                                       this.light_box(graphics_state, x-4, z-2, "next");
+                                      this.clickable_moves.push([x-4, z-2]);
                                 }
                         }
 
@@ -1688,9 +1713,11 @@ window.Chess_Scene = window.classes.Chess_Scene =
                                 if (pos == '_'){
                                       //empty - light up box
                                       this.light_box(graphics_state, x+2, z-4, "next");
+                                      this.clickable_moves.push([x+2, z-4]);
                                 } else if (pos[2] == 'b'){
                                       //enemy piece - light up box and stop
                                       this.light_box(graphics_state, x+2, z-4, "next");
+                                      this.clickable_moves.push([x+2, z-4]);
                                 }
                         }
                         if (this.valid_pos(x+4, z-2)){
@@ -1700,9 +1727,11 @@ window.Chess_Scene = window.classes.Chess_Scene =
                                 if (pos == '_'){
                                       //empty - light up box
                                       this.light_box(graphics_state, x+4, z-2, "next");
+                                      this.clickable_moves.push([x+4, z-2]);
                                 } else if (pos[2] == 'b'){
                                       //enemy piece - light up box and stop
                                       this.light_box(graphics_state, x+4, z-2, "next");
+                                      this.clickable_moves.push([x+4, z-2]);
                                 }
                         }
 
@@ -1715,9 +1744,11 @@ window.Chess_Scene = window.classes.Chess_Scene =
                                 if (pos == '_'){
                                       //empty - light up box
                                       this.light_box(graphics_state, x-2, z+4, "next");
+                                      this.clickable_moves.push([x-2, z+4]);
                                 } else if (pos[2] == 'b'){
                                       //enemy piece - light up box and stop
                                       this.light_box(graphics_state, x-2, z+4, "next");
+                                      this.clickable_moves.push([x-2, z+4]);
                                 }
                         }
                         if (this.valid_pos(x-4, z+2)){
@@ -1727,9 +1758,11 @@ window.Chess_Scene = window.classes.Chess_Scene =
                                 if (pos == '_'){
                                       //empty - light up box
                                       this.light_box(graphics_state, x-4, z+2, "next");
+                                      this.clickable_moves.push([x-4, z+2]);
                                 } else if (pos[2] == 'b'){
                                       //enemy piece - light up box and stop
                                       this.light_box(graphics_state, x-4, z+2, "next");
+                                      this.clickable_moves.push([x-4, z+2]);
                                 }
                         }
 
@@ -1746,9 +1779,11 @@ window.Chess_Scene = window.classes.Chess_Scene =
                                 if (pos == '_'){
                                       //empty - light up box
                                       this.light_box(graphics_state, x+2, z+4, "next");
+                                      this.clickable_moves.push([x+2, z+4]);
                                 } else if (pos[2] == 'w'){
                                       //enemy piece - light up box and stop
                                       this.light_box(graphics_state, x+2, z+4, "next");
+                                      this.clickable_moves.push([x+2, z+4]);
                                 }
                         }
                         if (this.valid_pos(x+4, z+2)){
@@ -1758,9 +1793,11 @@ window.Chess_Scene = window.classes.Chess_Scene =
                                 if (pos == '_'){
                                       //empty - light up box
                                       this.light_box(graphics_state, x+4, z+2, "next");
+                                      this.clickable_moves.push([x+4, z+2]);
                                 } else if (pos[2] == 'w'){
                                       //enemy piece - light up box and stop
                                       this.light_box(graphics_state, x+4, z+2, "next");
+                                      this.clickable_moves.push([x+4, z+2]);
                                 }
                         }
 
@@ -1772,9 +1809,11 @@ window.Chess_Scene = window.classes.Chess_Scene =
                                 if (pos == '_'){
                                       //empty - light up box
                                       this.light_box(graphics_state, x-2, z-4, "next");
+                                      this.clickable_moves.push([x-2, z-4]);
                                 } else if (pos[2] == 'w'){
                                       //enemy piece - light up box and stop
                                       this.light_box(graphics_state, x-2, z-4, "next");
+                                      this.clickable_moves.push([x-2, z-4]);
                                 }
                         }
                         if (this.valid_pos(x-4, z-2)){
@@ -1784,9 +1823,11 @@ window.Chess_Scene = window.classes.Chess_Scene =
                                 if (pos == '_'){
                                       //empty - light up box
                                       this.light_box(graphics_state, x-4, z-2, "next");
+                                      this.clickable_moves.push([x-4, z-2]);
                                 } else if (pos[2] == 'w'){
                                       //enemy piece - light up box and stop
                                       this.light_box(graphics_state, x-4, z-2, "next");
+                                      this.clickable_moves.push([x-4, z-2]);
                                 }
                         }
 
@@ -1799,9 +1840,11 @@ window.Chess_Scene = window.classes.Chess_Scene =
                                 if (pos == '_'){
                                       //empty - light up box
                                       this.light_box(graphics_state, x+2, z-4, "next");
+                                      this.clickable_moves.push([x+2, z-4]);
                                 } else if (pos[2] == 'w'){
                                       //enemy piece - light up box and stop
                                       this.light_box(graphics_state, x+2, z-4, "next");
+                                      this.clickable_moves.push([x+2, z-4]);
                                 }
                         }
                         if (this.valid_pos(x+4, z-2)){
@@ -1811,9 +1854,11 @@ window.Chess_Scene = window.classes.Chess_Scene =
                                 if (pos == '_'){
                                       //empty - light up box
                                       this.light_box(graphics_state, x+4, z-2, "next");
+                                      this.clickable_moves.push([x+4, z-2]);
                                 } else if (pos[2] == 'w'){
                                       //enemy piece - light up box and stop
                                       this.light_box(graphics_state, x+4, z-2, "next");
+                                      this.clickable_moves.push([x+4, z-2]);
                                 }
                         }
 
@@ -1826,9 +1871,11 @@ window.Chess_Scene = window.classes.Chess_Scene =
                                 if (pos == '_'){
                                       //empty - light up box
                                       this.light_box(graphics_state, x-2, z+4, "next");
+                                      this.clickable_moves.push([x-2, z+4]);
                                 } else if (pos[2] == 'w'){
                                       //enemy piece - light up box and stop
                                       this.light_box(graphics_state, x-2, z+4, "next");
+                                      this.clickable_moves.push([x-2, z+4]);
                                 }
                         }
                         if (this.valid_pos(x-4, z+2)){
@@ -1838,9 +1885,11 @@ window.Chess_Scene = window.classes.Chess_Scene =
                                 if (pos == '_'){
                                       //empty - light up box
                                       this.light_box(graphics_state, x-4, z+2, "next");
+                                      this.clickable_moves.push([x-4, z+2]);
                                 } else if (pos[2] == 'w'){
                                       //enemy piece - light up box and stop
                                       this.light_box(graphics_state, x-4, z+2, "next");
+                                      this.clickable_moves.push([x-4, z+2]);
                                 }
                         }
                 }
@@ -1870,10 +1919,12 @@ window.Chess_Scene = window.classes.Chess_Scene =
                                                 if (pos == '_'){
                                                         //empty - light up box
                                                         this.light_box(graphics_state, x, z, "next");
+                                                        this.clickable_moves.push([x, z]);
                                                 } else if (pos[2] == 'b'){
                                                         //enemy piece - light up box and stop
                                                         stop = 1;
                                                         this.light_box(graphics_state, x, z, "next");
+                                                        this.clickable_moves.push([x, z]);
                                                 } else if (pos[2] == 'w'){
                                                         //friendly piece - don't light box and stop
                                                         stop = 1;
@@ -1902,10 +1953,12 @@ window.Chess_Scene = window.classes.Chess_Scene =
                                                 if (pos == '_'){
                                                         //empty - light up box
                                                         this.light_box(graphics_state, x, z, "next");
+                                                        this.clickable_moves.push([x, z]);
                                                 } else if (pos[2] == 'b'){
                                                         //enemy piece - light up box and stop
                                                         stop = 1;
                                                         this.light_box(graphics_state, x, z, "next");
+                                                        this.clickable_moves.push([x, z]);
                                                 } else if (pos[2] == 'w'){
                                                         //friendly piece - don't light box and stop
                                                         stop = 1;
@@ -1933,10 +1986,12 @@ window.Chess_Scene = window.classes.Chess_Scene =
                                                 if (pos == '_'){
                                                         //empty - light up box
                                                         this.light_box(graphics_state, x, z, "next");
+                                                        this.clickable_moves.push([x, z]);
                                                 } else if (pos[2] == 'b'){
                                                         //enemy piece - light up box and stop
                                                         stop = 1;
                                                         this.light_box(graphics_state, x, z, "next");
+                                                        this.clickable_moves.push([x, z]);
                                                 } else if (pos[2] == 'w'){
                                                         //friendly piece - don't light box and stop
                                                         stop = 1;
@@ -1964,10 +2019,12 @@ window.Chess_Scene = window.classes.Chess_Scene =
                                                 if (pos == '_'){
                                                         //empty - light up box
                                                         this.light_box(graphics_state, x, z, "next");
+                                                        this.clickable_moves.push([x, z]);
                                                 } else if (pos[2] == 'b'){
                                                         //enemy piece - light up box and stop
                                                         stop = 1;
                                                         this.light_box(graphics_state, x, z, "next");
+                                                        this.clickable_moves.push([x, z]);
                                                 } else if (pos[2] == 'w'){
                                                         //friendly piece - don't light box and stop
                                                         stop = 1;
@@ -2003,10 +2060,12 @@ window.Chess_Scene = window.classes.Chess_Scene =
                                                 if (pos == '_'){
                                                         //empty - light up box
                                                         this.light_box(graphics_state, x, z, "next");
+                                                        this.clickable_moves.push([x, z]);
                                                 } else if (pos[2] == 'w'){
                                                         //enemy piece - light up box and stop
                                                         stop = 1;
                                                         this.light_box(graphics_state, x, z, "next");
+                                                        this.clickable_moves.push([x, z]);
                                                 } else if (pos[2] == 'b'){
                                                         //friendly piece - don't light box and stop
                                                         stop = 1;
@@ -2035,10 +2094,12 @@ window.Chess_Scene = window.classes.Chess_Scene =
                                                 if (pos == '_'){
                                                         //empty - light up box
                                                         this.light_box(graphics_state, x, z, "next");
+                                                        this.clickable_moves.push([x, z]);
                                                 } else if (pos[2] == 'w'){
                                                         //enemy piece - light up box and stop
                                                         stop = 1;
                                                         this.light_box(graphics_state, x, z, "next");
+                                                        this.clickable_moves.push([x, z]);
                                                 } else if (pos[2] == 'b'){
                                                         //friendly piece - don't light box and stop
                                                         stop = 1;
@@ -2066,10 +2127,12 @@ window.Chess_Scene = window.classes.Chess_Scene =
                                                 if (pos == '_'){
                                                         //empty - light up box
                                                         this.light_box(graphics_state, x, z, "next");
+                                                        this.clickable_moves.push([x, z]);
                                                 } else if (pos[2] == 'w'){
                                                         //enemy piece - light up box and stop
                                                         stop = 1;
                                                         this.light_box(graphics_state, x, z, "next");
+                                                        this.clickable_moves.push([x, z]);
                                                 } else if (pos[2] == 'b'){
                                                         //friendly piece - don't light box and stop
                                                         stop = 1;
@@ -2097,10 +2160,12 @@ window.Chess_Scene = window.classes.Chess_Scene =
                                                 if (pos == '_'){
                                                         //empty - light up box
                                                         this.light_box(graphics_state, x, z, "next");
+                                                        this.clickable_moves.push([x, z]);
                                                 } else if (pos[2] == 'w'){
                                                         //enemy piece - light up box and stop
                                                         stop = 1;
                                                         this.light_box(graphics_state, x, z, "next");
+                                                        this.clickable_moves.push([x, z]);
                                                 } else if (pos[2] == 'b'){
                                                         //friendly piece - don't light box and stop
                                                         stop = 1;
@@ -2143,9 +2208,11 @@ window.Chess_Scene = window.classes.Chess_Scene =
                                                         if (pos == '_'){
                                                                 //empty - light up box
                                                                 this.light_box(graphics_state, x+i, z+j, "next");
+                                                                this.clickable_moves.push([x+i, z+j]);
                                                         } else if (pos[2] == 'b'){
                                                                 //enemy piece - light up box and stop
                                                                 this.light_box(graphics_state, x+i, z+j, "next");
+                                                                this.clickable_moves.push([x+i, z+j]);
                                                         }
                                                 }
                                         }
@@ -2167,9 +2234,11 @@ window.Chess_Scene = window.classes.Chess_Scene =
                                                         if (pos == '_'){
                                                                 //empty - light up box
                                                                 this.light_box(graphics_state, x+i, z+j, "next");
+                                                                this.clickable_moves.push([x+i, z+j]);
                                                         } else if (pos[2] == 'w'){
                                                                 //enemy piece - light up box and stop
                                                                 this.light_box(graphics_state, x+i, z+j, "next");
+                                                                this.clickable_moves.push([x+i, z+j]);
                                                         }
                                                 }
                                         }
@@ -2177,6 +2246,8 @@ window.Chess_Scene = window.classes.Chess_Scene =
                         }
                 }
         }
+
+
 
         //tester function to try out wireframes
         // When a piece is clicked, it will call this and pass the location (on the grid) of the selected piece
@@ -2311,12 +2382,18 @@ window.Chess_Scene = window.classes.Chess_Scene =
                                 // We're in "move the piece mode", so look at clickable_moves NOT clickable_areas
                                 // clickable moves = [[-10,-10], etc. ...] (in 3d coords)
                                 var valid_move = false;
+                                
+                                this.clickable_moves = this.clickable_moves.sort().filter(function(item, pos, ary) {
+                                    return !pos || item != ary[pos - 1];
+                                });
+                                console.log("There are this many moves: " + this.clickable_moves.length);
                                 for (let i = 0; i < this.clickable_moves.length; i++) {
                                     // Check if clicked tile is in the piece's line of sight
                                     if ((cur_x * 2) - 10 == this.clickable_moves[i][0] && (cur_z * 2) - 10 == this.clickable_moves[i][1]) {
                                         valid_move = true;
                                         console.log("valid move!");
                                         // TODO: Trigger move
+                                        break;
                                     }
                                 }
                                 if(!valid_move) {
