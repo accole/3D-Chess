@@ -321,8 +321,8 @@ window.Chess_Scene = window.classes.Chess_Scene =
             this.max = 4;
             this.min = -10;
             //current position
-            this.curr_x = this.knight_x;
-            this.curr_z = this.black_pawn_z;
+            this.curr_x = 0;
+            this.curr_z = 0;
             
 
             //chess game - initialize to empty board
@@ -477,6 +477,27 @@ window.Chess_Scene = window.classes.Chess_Scene =
             this.key_triggered_button("Queen", ["q"], () => {
                  this.curr_z = this.white_z;
                  this.curr_x = this.queen_x;
+            });
+            this.key_triggered_button("Move", ["m"], () => {
+                var ip_x = 1;
+                var ip_y = 1;
+                var fp_x = 3;
+                var fp_y = 1;
+                /*
+                if(initial_pos_input == "b1"){
+                        ip_x = 1;
+                        ip_y = 1;
+                }
+                if(final_pos_input == "b3"){
+                        fp_x = 1;
+                        fp_y = 3;
+                }
+                */
+                console.log(ip_x);
+                console.log(fp_x);
+                this.gameboard[fp_x][fp_y] = this.gameboard[ip_x][ip_y];
+                //this.gameboard[final_[final_pos[1]] = 'p-w';
+                this.gameboard[ip_x][ip_y] = '_';   
             });
         }
 
@@ -1256,6 +1277,11 @@ window.Chess_Scene = window.classes.Chess_Scene =
         {
                 let board_coord = this.translate(x, z);
                 return this.gameboard[board_coord[1]][board_coord[0]];
+        }
+        edit_piece(x, z, entry)
+        {
+                let board_coord = this.translate(x, z);
+                this.gameboard[board_coord[1]][board_coord[0]] = entry;
         }
 
         //checks that an x,z position is on the chess board
@@ -2392,7 +2418,20 @@ window.Chess_Scene = window.classes.Chess_Scene =
                                     if ((cur_x * 2) - 10 == this.clickable_moves[i][0] && (cur_z * 2) - 10 == this.clickable_moves[i][1]) {
                                         valid_move = true;
                                         console.log("valid move!");
-                                        // TODO: Trigger move
+                                        console.log(this.gameboard[cur_z][cur_x]);
+                                        console.log(cur_z,cur_x)
+                                        console.log(this.gameboard[this.curr_z][this.curr_x]);
+                                        console.log(this.curr_z, this.curr_x);
+                                        var my_piece = this.get_piece(this.curr_x,this.curr_z);
+                                        console.log(my_piece);
+                                        this.gameboard[cur_z][cur_x] = my_piece;
+                                        console.log(this.gameboard[cur_z][cur_x]);
+                                        this.display_state(graphics_state);
+                                        this.edit_piece(this.curr_x, this.curr_z, '_');
+                                        this.selected = false;
+                                        //console.log(this.gameboard[this.curr_x][this.curr_z]);
+                                        //this.gameboard[cur_z][cur_x] = this.gameboard[this.curr_x][this.curr_z];
+                                        //this.gameboard[this.curr_x][this.curr_z] = '_';
                                         break;
                                     }
                                 }
@@ -2436,9 +2475,11 @@ window.Chess_Scene = window.classes.Chess_Scene =
 
             if (this.selected){
                 this.next_moves(graphics_state);
+                this.display_state(graphics_state);
             } else {
                 // Clear the clickable_moves array, since no piece is selected
                 this.clickable_moves = [];
+                this.display_state(graphics_state);
             }
 
             //this.play_game(graphics_state);
