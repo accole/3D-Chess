@@ -324,6 +324,9 @@ window.Chess_Scene = window.classes.Chess_Scene =
             this.curr_x = 0;
             this.curr_z = 0;
             
+            //move booleans
+            this.whites_move = true;
+            this.blacks_move = false;
 
             //chess game - initialize to empty board
             this.gameboard = [['_', '_', '_', '_', '_', '_', '_', '_'],
@@ -446,7 +449,9 @@ window.Chess_Scene = window.classes.Chess_Scene =
             this.key_triggered_button("Select Piece", ["s"], () => {
                  this.selected = !this.selected;
             });
-            this.key_triggered_button("Playing", ["p"], this.get_ex);
+            this.key_triggered_button("Playing", ["p"], () => {
+                 this.playing = !this.playing;
+            });
             this.new_line();
             this.key_triggered_button("Pawn", ["0"], () => {
                  if (this.playing) {
@@ -936,7 +941,7 @@ window.Chess_Scene = window.classes.Chess_Scene =
         //draw knight
         draw_knight(graphics_state, model_transform, side){
             //make a base
-            /*
+            
             let base = model_transform.times(Mat4.scale(Vec.of(0.65, 0.3, 0.65)));
             base = base.times(Mat4.translation([0, -2, 0]));
 
@@ -970,7 +975,7 @@ window.Chess_Scene = window.classes.Chess_Scene =
                 this.shapes.ball.draw(graphics_state, midring, this.board.override({color: this.piece_color_black}));
                 this.shapes.horse.draw(graphics_state, horse_body, this.board.override({color: this.piece_color_black}));
             }    
-            */
+            
         }
 
 
@@ -1128,14 +1133,14 @@ window.Chess_Scene = window.classes.Chess_Scene =
             let y = 3;
 
             //initialize game board
-            this.gameboard = [['r-w', 'k-w', 'b-w', 'q-w',  'a-w', 'b-w', 'k-w', 'r-w'],
+            this.gameboard = [['r-w', 'k-w', 'B-w', 'q-w',  'a-w', 'B-w', 'k-w', 'r-w'],
                               ['p-w', 'p-w', 'p-w', 'p-w',  'p-w', 'p-w', 'p-w', 'p-w'],
                               [  '_',   '_',   '_',   '_',    '_',   '_',   '_',   '_'],
                               [  '_',   '_',   '_',   '_',    '_',   '_',   '_',   '_'],
                               [  '_',   '_',   '_',   '_',    '_',   '_',   '_',   '_'],
                               [  '_',   '_',   '_',   '_',    '_',   '_',   '_',   '_'],
                               ['p-b', 'p-b', 'p-b', 'p-b',  'p-b', 'p-b', 'p-b', 'p-b'],
-                              ['r-b', 'k-b', 'b-b', 'q-b',  'a-b', 'b-b', 'k-b', 'r-b']];
+                              ['r-b', 'k-b', 'B-b', 'q-b',  'a-b', 'B-b', 'k-b', 'r-b']];
 
 
                                     //PAWNS
@@ -1242,7 +1247,7 @@ window.Chess_Scene = window.classes.Chess_Scene =
                              } else if (curr[0] == 'k'){
                                 //knight
                                 this.draw_knight(graphics_state, pos, c);
-                             } else if (curr[0] == 'b'){
+                             } else if (curr[0] == 'B'){
                                 //bishop
                                 this.draw_bishop(graphics_state, pos, c);
                              } else if (curr[0] == 'q'){
@@ -1282,6 +1287,19 @@ window.Chess_Scene = window.classes.Chess_Scene =
         {
                 let board_coord = this.translate(x, z);
                 this.gameboard[board_coord[1]][board_coord[0]] = entry;
+        }
+        get_color(x,z){
+                let board_coord = this.translate(x, z);
+                console.log(this.gameboard[board_coord[1]][board_coord[0]]);
+                var piece_string = this.gameboard[board_coord[1]][board_coord[0]];
+                if(piece_string.includes("b")){
+                        console.log("FUCK YOU JAKE");
+                        return "B";
+                }
+                else if(piece_string.includes("w")){
+                        return "W";
+                }
+                else return "N";
         }
 
         //checks that an x,z position is on the chess board
@@ -2412,23 +2430,32 @@ window.Chess_Scene = window.classes.Chess_Scene =
                                 this.clickable_moves = this.clickable_moves.sort().filter(function(item, pos, ary) {
                                     return !pos || item != ary[pos - 1];
                                 });
-                                console.log("There are this many moves: " + this.clickable_moves.length);
+                                //console.log("There are this many moves: " + this.clickable_moves.length);
                                 for (let i = 0; i < this.clickable_moves.length; i++) {
                                     // Check if clicked tile is in the piece's line of sight
                                     if ((cur_x * 2) - 10 == this.clickable_moves[i][0] && (cur_z * 2) - 10 == this.clickable_moves[i][1]) {
                                         valid_move = true;
-                                        console.log("valid move!");
-                                        console.log(this.gameboard[cur_z][cur_x]);
-                                        console.log(cur_z,cur_x)
-                                        console.log(this.gameboard[this.curr_z][this.curr_x]);
-                                        console.log(this.curr_z, this.curr_x);
+                                        //console.log("valid move!");
+                                        //console.log(this.gameboard[cur_z][cur_x]);
+                                        //console.log(cur_z,cur_x)
+                                        //console.log(this.gameboard[this.curr_z][this.curr_x]);
+                                        //console.log(this.curr_z, this.curr_x);
                                         var my_piece = this.get_piece(this.curr_x,this.curr_z);
-                                        console.log(my_piece);
-                                        this.gameboard[cur_z][cur_x] = my_piece;
-                                        console.log(this.gameboard[cur_z][cur_x]);
-                                        this.display_state(graphics_state);
-                                        this.edit_piece(this.curr_x, this.curr_z, '_');
-                                        this.selected = false;
+                                        var my_color = this.get_color(this.curr_x,this.curr_z);
+                                        console.log(my_color);
+                                        console.log(this.blacks_move);
+                                        console.log(this.whites_move);
+                                        if((my_color == "B" && this.blacks_move ) || (my_color == "W" && this.whites_move)){
+                                                console.log(my_piece);
+                                                this.gameboard[cur_z][cur_x] = my_piece;
+                                                console.log(this.gameboard[cur_z][cur_x]);
+                                                this.display_state(graphics_state);
+                                                this.edit_piece(this.curr_x, this.curr_z, '_');
+                                                this.selected = false;
+                                                this.blacks_move = !this.blacks_move;
+                                                this.whites_move = !this.whites_move;
+                                        }
+                                    
                                         //console.log(this.gameboard[this.curr_x][this.curr_z]);
                                         //this.gameboard[cur_z][cur_x] = this.gameboard[this.curr_x][this.curr_z];
                                         //this.gameboard[this.curr_x][this.curr_z] = '_';
@@ -2474,8 +2501,11 @@ window.Chess_Scene = window.classes.Chess_Scene =
             }
 
             if (this.selected){
-                this.next_moves(graphics_state);
-                this.display_state(graphics_state);
+                var my_color = this.get_color(this.curr_x, this.curr_z);
+                if((my_color == "B" && this.blacks_move ) || (my_color == "W" && this.whites_move)){
+                        this.next_moves(graphics_state);
+                        this.display_state(graphics_state);
+                }
             } else {
                 // Clear the clickable_moves array, since no piece is selected
                 this.clickable_moves = [];
