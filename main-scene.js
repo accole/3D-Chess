@@ -408,63 +408,8 @@ window.Chess_Scene = window.classes.Chess_Scene =
             this.key_triggered_button("Rotate", ["r"], () => {
                  this.rotate = !this.rotate;
             });
-            this.key_triggered_button("Select Piece", ["s"], () => {
-                 this.selected = !this.selected;
-            });
             this.key_triggered_button("Playing", ["p"], () => {
                  this.playing = !this.playing;
-            });
-            this.new_line();
-            this.key_triggered_button("Pawn", ["0"], () => {
-                 if (this.playing) {
-                        this.curr_z = -4;
-                        this.curr_x = -4;
-                 } else {
-                        this.curr_x = this.knight_x;
-                        this.curr_z = this.black_pawn_z;
-                 }
-            });
-            this.key_triggered_button("Rook", ["v"], () => {
-                 this.curr_z = -10;
-                 this.curr_x = this.white_z;
-            });
-            this.key_triggered_button("Bishop", ["b"], () => {
-                 this.curr_z = -2;
-                 this.curr_x = -2;
-            });
-            this.key_triggered_button("King", ["k"], () => {
-                 this.curr_z = this.black_z;
-                 this.curr_x = -6;
-            });
-            this.new_line();
-            this.key_triggered_button("Knight", ["z"], () => {
-                 this.curr_z = 0;
-                 this.curr_x = this.bish_x;
-            });
-            this.key_triggered_button("Queen", ["q"], () => {
-                 this.curr_z = this.white_z;
-                 this.curr_x = this.queen_x;
-            });
-            this.key_triggered_button("Move", ["m"], () => {
-                var ip_x = 1;
-                var ip_y = 1;
-                var fp_x = 3;
-                var fp_y = 1;
-                /*
-                if(initial_pos_input == "b1"){
-                        ip_x = 1;
-                        ip_y = 1;
-                }
-                if(final_pos_input == "b3"){
-                        fp_x = 1;
-                        fp_y = 3;
-                }
-                */
-                console.log(ip_x);
-                console.log(fp_x);
-                this.gameboard[fp_x][fp_y] = this.gameboard[ip_x][ip_y];
-                //this.gameboard[final_[final_pos[1]] = 'p-w';
-                this.gameboard[ip_x][ip_y] = '_';   
             });
         }
 
@@ -929,7 +874,7 @@ window.Chess_Scene = window.classes.Chess_Scene =
                 this.shapes.ball.draw(graphics_state, midring, this.board.override({color: this.piece_color_white}));
                 this.shapes.ball.draw(graphics_state, horse_body, this.board.override({color: this.piece_color_white}));
                 
-                let h2 = model_transform.times(Mat4.scale(Vec.of( 0.45, .25, 0.25)));
+                let h2 = model_transform.times(Mat4.scale(Vec.of( 0.4, .25, 0.25)));
                 h2 = h2.times(Mat4.translation([0,5.35,-1.25]));
                 this.shapes.ball.draw(graphics_state, h2, this.board.override({color: this.piece_color_white}));
 
@@ -945,7 +890,7 @@ window.Chess_Scene = window.classes.Chess_Scene =
                 this.shapes.ball.draw(graphics_state, midring, this.board.override({color: this.piece_color_black}));
                 this.shapes.ball.draw(graphics_state, horse_body, this.board.override({color: this.piece_color_black}));
 
-                let h2 = model_transform.times(Mat4.scale(Vec.of( 0.45, .25, 0.25)));
+                let h2 = model_transform.times(Mat4.scale(Vec.of( 0.4, .25, 0.25)));
                 h2 = h2.times(Mat4.translation([0,5.35,1.25]));
                 this.shapes.ball.draw(graphics_state, h2, this.board.override({color: this.piece_color_black}));
 
