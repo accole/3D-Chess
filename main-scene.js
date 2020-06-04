@@ -338,6 +338,14 @@ window.Chess_Scene = window.classes.Chess_Scene =
                               ['_', '_', '_', '_', '_', '_', '_', '_'],
                               ['_', '_', '_', '_', '_', '_', '_', '_']];
 
+            // animating state; false means not animating, true means animating
+            this.animating = false;
+            this.animating_from = [0,0];
+            this.animating_to = [0,0];
+            this.animating_cur = [0,0];
+            this.animating_start_time = 0;
+            this.animating_piece = '';
+
 
             // VARIABLES TO HELP WITH MOUSE PICKING
             this.mousedown = false;
@@ -1228,6 +1236,35 @@ window.Chess_Scene = window.classes.Chess_Scene =
              //define y
              let y = 3;
 
+             if(this.animating){
+                 let init_x = this.animating_from[0];
+                 let init_y = this.animating_from[1];
+                //  console.log("init_x: " + init_x);
+                //  console.log("init_y: " + init_y);
+
+                 let end_x = this.animating_to[0];
+                 let end_y = this.animating_to[1];
+                //  console.log("end_x: " + end_x);
+                //  console.log("end_x: " + end_y);
+
+                 let step_x = ((end_x - init_x) / 1000);
+                 let step_y = (end_y - init_y) / 1000;
+
+                 let pos = this.pos_to_Mat(this.animating_cur[0], y, this.animating_cur[1]);
+                 let c = this.animating_piece[2];
+                this.draw_piece(graphics_state, pos, c, this.animating_piece[0]);
+                let time_elapsed = graphics_state.animation_time - this.animating_start_time;
+                this.animating_cur[0] = init_x + (step_x * time_elapsed);
+                this.animating_cur[1] = init_y + (step_y * time_elapsed);
+
+                 if(graphics_state.animation_time > this.animating_start_time + 1000) {
+                    this.animating = false;
+                    this.gameboard[(end_y+10)/2][(end_x+10)/2] = this.animating_piece;   // update game board with new piece               
+                    this.blacks_move = !this.blacks_move;
+                    this.whites_move = !this.whites_move;
+                 }
+             }
+
              //loop through gameboard and display the pieces
              for (let x = this.min; x <= this.max; x = x + 2){
                   for (let z = this.min; z <= this.max; z = z + 2){
@@ -1238,27 +1275,31 @@ window.Chess_Scene = window.classes.Chess_Scene =
                              //get the color of piece
                              let c = curr[2];
                              let pos = this.pos_to_Mat(x, y, z);
-                             if (curr[0] == 'p'){
-                                //pawn
-                                this.draw_pawn(graphics_state, pos, c);
-                             } else if (curr[0] == 'r'){
-                                //rook
-                                this.draw_rook(graphics_state, pos, c);
-                             } else if (curr[0] == 'k'){
-                                //knight
-                                this.draw_knight(graphics_state, pos, c);
-                             } else if (curr[0] == 'B'){
-                                //bishop
-                                this.draw_bishop(graphics_state, pos, c);
-                             } else if (curr[0] == 'q'){
-                                //queen
-                                this.draw_queen(graphics_state, pos, c);
-                             } else {
-                                //king
-                                this.draw_king(graphics_state, pos, c);
-                             }
+                             this.draw_piece(graphics_state, pos, c, curr[0]);
                    }
              }}
+        }
+
+        draw_piece(graphics_state, pos, c, piece_char) {
+            if (piece_char == 'p'){
+                //pawn
+                this.draw_pawn(graphics_state, pos, c);
+             } else if (piece_char == 'r'){
+                //rook
+                this.draw_rook(graphics_state, pos, c);
+             } else if (piece_char == 'k'){
+                //knight
+                this.draw_knight(graphics_state, pos, c);
+             } else if (piece_char == 'b'){
+                //bishop
+                this.draw_bishop(graphics_state, pos, c);
+             } else if (piece_char == 'q'){
+                //queen
+                this.draw_queen(graphics_state, pos, c);
+             } else {
+                //king
+                this.draw_king(graphics_state, pos, c);
+             }
         }
 
         //play(graphics_state){}
@@ -2386,6 +2427,7 @@ window.Chess_Scene = window.classes.Chess_Scene =
 //DISPLAY FUNCTION
 
         display(graphics_state) {
+            // console.log(graphics_state.animation_time);
            // const mouse_position = (e, rect = canvas.getBoundingClientRect()) =>
                // Vec.of(e.clientX - (rect.left + rect.right) / 2, e.clientY - (rect.bottom + rect.top) / 2);
             document.addEventListener("mousedown", e => {
@@ -2447,13 +2489,18 @@ window.Chess_Scene = window.classes.Chess_Scene =
                                         console.log(this.whites_move);
                                         if((my_color == "B" && this.blacks_move ) || (my_color == "W" && this.whites_move)){
                                                 console.log(my_piece);
-                                                this.gameboard[cur_z][cur_x] = my_piece;
                                                 console.log(this.gameboard[cur_z][cur_x]);
                                                 this.display_state(graphics_state);
-                                                this.edit_piece(this.curr_x, this.curr_z, '_');
+                                                this.edit_piece(this.curr_x, this.curr_z, '_'); // remove piece from where it was
+                                                // TRIGGER ANIMATION
+                                                this.animating_from = [this.curr_x, this.curr_z];
+                                                this.animating_to = [(cur_x * 2) - 10, (cur_z * 2) - 10];
+                                                this.animating_cur = [this.curr_x, this.curr_z];
+                                                this.animating_start_time = graphics_state.animation_time;
+                                                this.animating_piece = my_piece;
+                                                this.animating = true;
+            
                                                 this.selected = false;
-                                                this.blacks_move = !this.blacks_move;
-                                                this.whites_move = !this.whites_move;
                                         }
                                     
                                         //console.log(this.gameboard[this.curr_x][this.curr_z]);
