@@ -265,7 +265,6 @@ window.Chess_Scene = window.classes.Chess_Scene =
 
             //add toggle bits for buttons
             this.selected = false;
-            this.playing = false;
 
             //chess game variables
             //z "rows" of teams
@@ -291,14 +290,14 @@ window.Chess_Scene = window.classes.Chess_Scene =
             this.blacks_move = false;
 
             //chess game - initialize to empty board
-            this.gameboard = [['_', '_', '_', '_', '_', '_', '_', '_'],
-                              ['_', '_', '_', '_', '_', '_', '_', '_'],
-                              ['_', '_', '_', '_', '_', '_', '_', '_'],
-                              ['_', '_', '_', '_', '_', '_', '_', '_'],
-                              ['_', '_', '_', '_', '_', '_', '_', '_'],
-                              ['_', '_', '_', '_', '_', '_', '_', '_'],
-                              ['_', '_', '_', '_', '_', '_', '_', '_'],
-                              ['_', '_', '_', '_', '_', '_', '_', '_']];
+            this.gameboard = [['r-w', 'k-w', 'B-w', 'q-w',  'a-w', 'B-w', 'k-w', 'r-w'],
+                              ['p-w', 'p-w', 'p-w', 'p-w',  'p-w', 'p-w', 'p-w', 'p-w'],
+                              [  '_',   '_',   '_',   '_',    '_',   '_',   '_',   '_'],
+                              [  '_',   '_',   '_',   '_',    '_',   '_',   '_',   '_'],
+                              [  '_',   '_',   '_',   '_',    '_',   '_',   '_',   '_'],
+                              [  '_',   '_',   '_',   '_',    '_',   '_',   '_',   '_'],
+                              ['p-b', 'p-b', 'p-b', 'p-b',  'p-b', 'p-b', 'p-b', 'p-b'],
+                              ['r-b', 'k-b', 'B-b', 'q-b',  'a-b', 'B-b', 'k-b', 'r-b']];
 
             // animating state; false means not animating, true means animating
             this.animating = false;
@@ -416,9 +415,6 @@ window.Chess_Scene = window.classes.Chess_Scene =
             this.key_triggered_button("Rotate", ["r"], () => {
                  this.rotate = !this.rotate;
             });
-            this.key_triggered_button("Playing", ["p"], () => {
-                 this.playing = !this.playing;
-            });
         }
 
 
@@ -429,25 +425,25 @@ window.Chess_Scene = window.classes.Chess_Scene =
                  if (this.playing) {
                         this.gameboard =
                              [['r-w',   '_',   '_', 'q-w',   '_', 'r-w', 'a-w',   '_'],
-                              [  '_',   '_',   '_', 'p-w', 'b-w', 'p-w', 'p-w', 'p-w'],
+                              [  '_',   '_',   '_', 'p-w', 'B-w', 'p-w', 'p-w', 'p-w'],
                               [  '_',   '_', 'p-w',   '_', 'p-w', 'k-w',   '_',   '_'],
                               [  '_',   '_',   '_', 'p-b',   '_',   '_',   '_',   '_'],
-                              [  '_', 'k-w', 'p-b',   '_', 'b-w', 'p-b',   '_',   '_'],
+                              [  '_', 'k-w', 'p-b',   '_', 'B-w', 'p-b',   '_',   '_'],
                               [  '_',   '_', 'k-b',   '_',   '_',   '_',   '_',   '_'],
-                              ['p-b', 'p-b',   '_', 'q-b', 'b-b',   '_', 'p-b', 'p-b'],
+                              ['p-b', 'p-b',   '_', 'q-b', 'B-b',   '_', 'p-b', 'p-b'],
                               [ '_',   '_',  'a-b', 'r-b',   '_',  '_',    '_', 'r-b']];
                         this.curr_z = this.white_z;
                         this.curr_x = this.rook_x;
                  } else {
                         this.gameboard =
-                             [['r-w', 'k-w', 'b-w', 'q-w',  'a-w', 'b-w', 'k-w', 'r-w'],
+                             [['r-w', 'k-w', 'B-w', 'q-w',  'a-w', 'B-w', 'k-w', 'r-w'],
                               ['p-w', 'p-w', 'p-w', 'p-w',  'p-w', 'p-w', 'p-w', 'p-w'],
                               [  '_',   '_',   '_',   '_',    '_',   '_',   '_',   '_'],
                               [  '_',   '_',   '_',   '_',    '_',   '_',   '_',   '_'],
                               [  '_',   '_',   '_',   '_',    '_',   '_',   '_',   '_'],
                               [  '_',   '_',   '_',   '_',    '_',   '_',   '_',   '_'],
                               ['p-b', 'p-b', 'p-b', 'p-b',  'p-b', 'p-b', 'p-b', 'p-b'],
-                              ['r-b', 'k-b', 'b-b', 'q-b',  'a-b', 'b-b', 'k-b', 'r-b']];
+                              ['r-b', 'k-b', 'B-b', 'q-b',  'a-b', 'B-b', 'k-b', 'r-b']];
                         this.curr_z = this.black_pawn_z;
                         this.curr_x = this.knight_x;
                  }
@@ -1057,102 +1053,6 @@ window.Chess_Scene = window.classes.Chess_Scene =
             return Mat4.identity().times(Mat4.translation([x,y,z]));
         }
 
-        //sets up chess board with all pieces on both sides
-        initialize_game(graphics_state){
-
-            //define position constants
-            let y = 3;
-
-            //initialize game board
-            this.gameboard = [['r-w', 'k-w', 'B-w', 'q-w',  'a-w', 'B-w', 'k-w', 'r-w'],
-                              ['p-w', 'p-w', 'p-w', 'p-w',  'p-w', 'p-w', 'p-w', 'p-w'],
-                              [  '_',   '_',   '_',   '_',    '_',   '_',   '_',   '_'],
-                              [  '_',   '_',   '_',   '_',    '_',   '_',   '_',   '_'],
-                              [  '_',   '_',   '_',   '_',    '_',   '_',   '_',   '_'],
-                              [  '_',   '_',   '_',   '_',    '_',   '_',   '_',   '_'],
-                              ['p-b', 'p-b', 'p-b', 'p-b',  'p-b', 'p-b', 'p-b', 'p-b'],
-                              ['r-b', 'k-b', 'B-b', 'q-b',  'a-b', 'B-b', 'k-b', 'r-b']];
-
-
-                                    //PAWNS
-            //initialize black pawns
-            //let pawn_pos = Mat4.identity().times(Mat4.translation([-10,y,this.black_pawn_z]));
-            let pawn_pos = this.pos_to_Mat(-10,y,this.black_pawn_z);
-            for (let i = 0; i < 8; i++){
-                this.draw_pawn(graphics_state, pawn_pos, "b");
-                pawn_pos = pawn_pos.times(Mat4.translation([2,0,0]));
-            }
-
-            //initialize white pawns
-            pawn_pos = this.pos_to_Mat(-10,y,this.white_pawn_z);
-            for (let i = 0; i < 8; i++){
-                this.draw_pawn(graphics_state, pawn_pos, "w");
-                pawn_pos = pawn_pos.times(Mat4.translation([2,0,0]));
-            }
-
-                                    //ROOKS
-            //initialize black rooks
-            let rook_pos = this.pos_to_Mat(this.rook_x,y,this.black_z);
-            this.draw_rook(graphics_state, rook_pos, "b");
-            rook_pos = this.pos_to_Mat(this.rook2_x,y,this.black_z);
-            this.draw_rook(graphics_state, rook_pos, "b");
-
-            //initialize white rooks
-            rook_pos = this.pos_to_Mat(this.rook_x,y,this.white_z);
-            this.draw_rook(graphics_state, rook_pos, "w");
-            rook_pos = this.pos_to_Mat(this.rook2_x,y,this.white_z);
-            this.draw_rook(graphics_state, rook_pos, "w");
-            
-
-                                    //KNIGHTS
-            //initialize black knights
-            let knight_pos = this.pos_to_Mat(this.knight_x,y,this.black_z);
-            this.draw_knight(graphics_state, knight_pos, "b");
-            knight_pos = this.pos_to_Mat(this.knight2_x,y,this.black_z);
-            this.draw_knight(graphics_state, knight_pos, "b");
-
-            //initialize white knights
-            knight_pos = this.pos_to_Mat(this.knight_x,y,this.white_z);
-            this.draw_knight(graphics_state, knight_pos, "w");
-            knight_pos = this.pos_to_Mat(this.knight2_x,y,this.white_z);
-            this.draw_knight(graphics_state, knight_pos, "w");
-
-
-                                    //BISHOPS
-            //initialize black bishops
-            let bish_pos = this.pos_to_Mat(this.bish_x,y,this.black_z);
-            this.draw_bishop(graphics_state, bish_pos, "b");
-            bish_pos = this.pos_to_Mat(this.bish2_x,y,this.black_z);
-            this.draw_bishop(graphics_state, bish_pos, "b");
-
-            //initialize white bishops
-            bish_pos = this.pos_to_Mat(this.bish_x,y,this.white_z);
-            this.draw_bishop(graphics_state, bish_pos, "w");
-            bish_pos = this.pos_to_Mat(this.bish2_x,y,this.white_z);
-            this.draw_bishop(graphics_state, bish_pos, "w");
-
-
-                                    //QUEENS
-            //initialize black queen
-            let queen_pos = this.pos_to_Mat(this.queen_x,y,this.black_z);
-            this.draw_queen(graphics_state, queen_pos, "b");
-
-            //initialize white queen
-            queen_pos = this.pos_to_Mat(this.queen_x,y,this.white_z);
-            this.draw_queen(graphics_state, queen_pos, "w");
-
-
-                                    //KINGS
-            //initialize black king
-            let king_pos = this.pos_to_Mat(this.king_x,y,this.black_z);
-            this.draw_king(graphics_state, king_pos, "b");
-
-            //initialize white king
-            king_pos = this.pos_to_Mat(this.king_x,y,this.white_z);
-            this.draw_king(graphics_state, king_pos, "w");
-            
-        }
-
 
         display_state(graphics_state)
         {
@@ -1218,7 +1118,7 @@ window.Chess_Scene = window.classes.Chess_Scene =
              } else if (piece_char == 'k'){
                 //knight
                 this.draw_knight(graphics_state, pos, c);
-             } else if (piece_char == 'b'){
+             } else if (piece_char == 'B'){
                 //bishop
                 this.draw_bishop(graphics_state, pos, c);
              } else if (piece_char == 'q'){
@@ -1262,7 +1162,7 @@ window.Chess_Scene = window.classes.Chess_Scene =
                 console.log(this.gameboard[board_coord[1]][board_coord[0]]);
                 var piece_string = this.gameboard[board_coord[1]][board_coord[0]];
                 if(piece_string.includes("b")){
-                        console.log("FUCK YOU JAKE");
+                        //console.log("FUCK YOU JAKE");
                         return "B";
                 }
                 else if(piece_string.includes("w")){
@@ -2285,7 +2185,7 @@ window.Chess_Scene = window.classes.Chess_Scene =
             } else if (curr_piece[0] == 'k'){
                     //knight 
                     this.next_moves_knights(graphics_state, curr_piece);
-            } else if (curr_piece[0] == 'b'){
+            } else if (curr_piece[0] == 'B'){
                     //bishop
                     this.next_moves_bishops(graphics_state, curr_piece);
             } else if (curr_piece[0] == 'q'){
@@ -2471,13 +2371,8 @@ window.Chess_Scene = window.classes.Chess_Scene =
 
             // Play the chess game
             
-            if (this.playing) {
-                //if playing, display the current state of this.gameboard
-                this.display_state(graphics_state);
-            } else {
-                //else start from the beginning of the game and reset this.gameboard
-                this.initialize_game(graphics_state);
-            }
+            //if playing, display the current state of this.gameboard
+            this.display_state(graphics_state);
 
             if (this.selected){
                 var my_color = this.get_color(this.curr_x, this.curr_z);
