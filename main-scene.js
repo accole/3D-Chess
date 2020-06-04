@@ -1059,6 +1059,7 @@ window.Chess_Scene = window.classes.Chess_Scene =
                  let step_y = (end_y - init_y) / 1000;
 
                  let pos = this.pos_to_Mat(this.animating_cur[0], y, this.animating_cur[1]);
+                 
                  let c = this.animating_piece[2];
                 this.draw_piece(graphics_state, pos, c, this.animating_piece[0]);
                 let time_elapsed = graphics_state.animation_time - this.animating_start_time;
@@ -1084,21 +1085,36 @@ window.Chess_Scene = window.classes.Chess_Scene =
                      let curr = this.get_piece(x, z);
                      if (curr[0] == '_'){
                              //nothing - empty space
-                     } else {
+                     } 
+                     else {
                              //get the color of piece
                              let c = curr[2];
                              let pos = this.pos_to_Mat(x, y, z);
-                             this.draw_piece(graphics_state, pos, c, curr[0]);
+                             let temp = curr[0];
+                             console.log(this.max);
+                             if(curr[0] == 'p' && (z == this.max || z == this.min)){
+                                     if(c == 'b'){
+                                        this.edit_piece(x, z, 'q-b');
+                                     }
+                                     else if(c == 'w'){
+                                        this.edit_piece(x,z,'q-w');
+                                     }
+                                        
+                                     temp = 'q';
+                             }
+                             this.draw_piece(graphics_state, pos, c, temp);
                    }
              }}
              let x_taken = 6.5;
              let z_taken = this.max;
+             
              for(var i = 0; i < this.white_taken_list.length; i++){
                      let pos = this.pos_to_Mat(x_taken, y, z_taken);
                      let curr = this.white_taken_list[i];
                      let c = curr[2];
                              if (curr[0] == 'p'){
                                 //pawn
+                                
                                 this.draw_pawn(graphics_state, pos, c);
                              } else if (curr[0] == 'r'){
                                 //rook
@@ -1130,6 +1146,7 @@ window.Chess_Scene = window.classes.Chess_Scene =
                      let c = curr[2];
                              if (curr[0] == 'p'){
                                 //pawn
+                                
                                 this.draw_pawn(graphics_state, pos, c);
                              } else if (curr[0] == 'r'){
                                 //rook
