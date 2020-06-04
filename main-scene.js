@@ -261,7 +261,7 @@ window.Chess_Scene = window.classes.Chess_Scene =
             //buttons for camera view
             this.top = false;
             this.lookaround = false;
-            this.rotate = false;
+            this.rotate = true;
 
             //add toggle bits for buttons
             this.selected = false;
@@ -1185,6 +1185,11 @@ window.Chess_Scene = window.classes.Chess_Scene =
                     this.gameboard[(end_y+10)/2][(end_x+10)/2] = this.animating_piece;   // update game board with new piece               
                     this.blacks_move = !this.blacks_move;
                     this.whites_move = !this.whites_move;
+                    let i = 0;
+                    while(i < 5000){
+                            i++;
+                    }
+                    this.rotate = !this.rotate;
                  }
              }
 
@@ -2373,6 +2378,10 @@ window.Chess_Scene = window.classes.Chess_Scene =
                             // Get column, row
                             let cur_x = i % 8;
                             let cur_z = 7 - Math.floor(i / 8); 
+                            if(this.rotate){
+                                    cur_x = 7 - cur_x;
+                                    cur_z = 7 - cur_z;
+                            }
                             
                             // No piece selected atm... pick one
                             if(this.clickstate == false) {
