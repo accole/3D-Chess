@@ -84,43 +84,6 @@ window.Cube = window.classes.Cube =
 
 
 //PRISM CLASS
-
-window.HorsePrism = window.classes.HorsePrism =
-    class HorsePrism extends Shape {
-        // Here's a complete, working example of a Shape subclass.  It is a blueprint for a cube.
-        constructor() {
-            super("positions", "normals"); // Name the values we'll define per each vertex.  They'll have positions and normals.
-
-            // First, specify the vertex positions -- just a bunch of points that exist at the corners of an imaginary cube.
-            this.positions.push(...Vec.cast(
-                [-1, -1, -1], [1, -1, -1], [-1, -1, 1], [1, -1, 1], [1, 1, -1], [-1, 1, -1],
-                [-1, -1, -1], [-1, -1, 1], [-1, 1, -1], [-1, -1, 1], [1, -1, 1], [1, -1, -1], [1, -1, 1], [1, 1, -1],
-                [-1, -1, 1], [1, -1, 1], [1, -1, -1], [-1, -1, -1], [1, 1, -1], [-1, 1, -1], 
-                //add vertical lines to box
-                [-1, -1, -1], [-1, 1, -1], [1, -1, -1], [1, 1, -1]));
-            
-            // Supply vectors that point away from eace face of the cube.  They should match up with the points in the above list
-            // Normal vectors are needed so the graphics engine can know if the shape is pointed at light or not, and color it accordingly.
-            this.normals.push(...Vec.cast(
-                [0, -1, 0], [0, -1, 0], [0, -1, 0], [0, -1, 0], [0, 1, 0], [0, 1, 0],
-                [-1, 0, 0], [-1, 0, 0], [-1, 0, 0], [-1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0],
-                [0, 0, 1], [0, 0, 1], [0, 0, -1], [0, 0, -1], [0, 0, -1], [0, 0, -1],
-                [0, 0, -1], [0, 0, -1], [0, 0, -1], [0, 0, -1]));
-
-            // Those two lists, positions and normals, fully describe the "vertices".  What's the "i"th vertex?  Simply the combined
-            // data you get if you look up index "i" of both lists above -- a position and a normal vector, together.  Now let's
-            // tell it how to connect vertex entries into triangles.  Every three indices in this list makes one triangle:
-            this.indices.push(0, 1, 2, //good
-                              1, 3, 2, //good
-                              4, 5, 0,
-                              4, 1, 0,
-                              4, 3, 1,
-                              5, 0, 2,
-                              4, 5, 3,
-                              5, 2, 3);
-        }
-    };
-
 window.TPrism = window.classes.TPrism =
     class TPrism extends Shape {
         // Here's a complete, working example of a Shape subclass.  It is a blueprint for a cube.
@@ -251,8 +214,7 @@ window.Chess_Scene = window.classes.Chess_Scene =
                 'box': new Cube(),
                 'ball': new Subdivision_Sphere(4),
                 'nextwire': new Next_Outline(),
-                'wire': new Outline(),
-                'horse': new HorsePrism()
+                'wire': new Outline()
             };
             this.submit_shapes(context, shapes);
 
@@ -954,8 +916,8 @@ window.Chess_Scene = window.classes.Chess_Scene =
             let midring = model_transform.times(Mat4.scale(Vec.of( 0.5, .25, 0.5)));
             midring = midring.times(Mat4.translation([0,2,0]));
 
-            let horse_body = model_transform.times(Mat4.scale(Vec.of( 0.4, .5, 0.37)));
-            horse_body = horse_body.times(Mat4.translation([0,2.5,-0.2]));
+            let horse_body = model_transform.times(Mat4.scale(Vec.of( 0.45, .25, 0.25)));
+            horse_body = horse_body.times(Mat4.translation([0,4.25,0]));
 
             if (side == "w"){
                 this.shapes.ball.draw(graphics_state, base, this.board.override({color: this.piece_color_white}));
@@ -965,7 +927,15 @@ window.Chess_Scene = window.classes.Chess_Scene =
                 this.shapes.ball.draw(graphics_state, midring, this.board.override({color: this.piece_color_white}));
                 midring = midring.times(Mat4.translation([0,0.6,0]));
                 this.shapes.ball.draw(graphics_state, midring, this.board.override({color: this.piece_color_white}));
-                this.shapes.horse.draw(graphics_state, horse_body, this.board.override({color: this.piece_color_white}));
+                this.shapes.ball.draw(graphics_state, horse_body, this.board.override({color: this.piece_color_white}));
+                
+                let h2 = model_transform.times(Mat4.scale(Vec.of( 0.45, .25, 0.25)));
+                h2 = h2.times(Mat4.translation([0,5.35,-1.25]));
+                this.shapes.ball.draw(graphics_state, h2, this.board.override({color: this.piece_color_white}));
+
+                let h3 = model_transform.times(Mat4.scale(Vec.of( 0.35, .25, 0.25)));
+                h3 = h3.times(Mat4.translation([0,6.35,-0.5]));
+                this.shapes.ball.draw(graphics_state, h3, this.board.override({color: this.piece_color_white}));
             } else {
                 this.shapes.ball.draw(graphics_state, base, this.board.override({color: this.piece_color_black}));
                 this.shapes.ball.draw(graphics_state, basering, this.board.override({color: this.piece_color_black}));
@@ -973,7 +943,15 @@ window.Chess_Scene = window.classes.Chess_Scene =
                 this.shapes.ball.draw(graphics_state, midring, this.board.override({color: this.piece_color_black}));
                 midring = midring.times(Mat4.translation([0,0.6,0]));
                 this.shapes.ball.draw(graphics_state, midring, this.board.override({color: this.piece_color_black}));
-                this.shapes.horse.draw(graphics_state, horse_body, this.board.override({color: this.piece_color_black}));
+                this.shapes.ball.draw(graphics_state, horse_body, this.board.override({color: this.piece_color_black}));
+
+                let h2 = model_transform.times(Mat4.scale(Vec.of( 0.45, .25, 0.25)));
+                h2 = h2.times(Mat4.translation([0,5.35,1.25]));
+                this.shapes.ball.draw(graphics_state, h2, this.board.override({color: this.piece_color_black}));
+
+                let h3 = model_transform.times(Mat4.scale(Vec.of( 0.35, .25, 0.25)));
+                h3 = h3.times(Mat4.translation([0,6.55,0]));
+                this.shapes.ball.draw(graphics_state, h3, this.board.override({color: this.piece_color_black}));
             }    
             
         }
