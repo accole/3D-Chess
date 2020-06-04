@@ -412,8 +412,21 @@ window.Chess_Scene = window.classes.Chess_Scene =
                  this.lookaround = !this.lookaround;
             });
             this.new_line();
-            this.key_triggered_button("Rotate", ["r"], () => {
-                 this.rotate = !this.rotate;
+            this.key_triggered_button("Reset Game", ["r"], () => {
+                 this.gameboard = 
+                             [['r-w', 'k-w', 'B-w', 'q-w',  'a-w', 'B-w', 'k-w', 'r-w'],
+                              ['p-w', 'p-w', 'p-w', 'p-w',  'p-w', 'p-w', 'p-w', 'p-w'],
+                              [  '_',   '_',   '_',   '_',    '_',   '_',   '_',   '_'],
+                              [  '_',   '_',   '_',   '_',    '_',   '_',   '_',   '_'],
+                              [  '_',   '_',   '_',   '_',    '_',   '_',   '_',   '_'],
+                              [  '_',   '_',   '_',   '_',    '_',   '_',   '_',   '_'],
+                              ['p-b', 'p-b', 'p-b', 'p-b',  'p-b', 'p-b', 'p-b', 'p-b'],
+                              ['r-b', 'k-b', 'B-b', 'q-b',  'a-b', 'B-b', 'k-b', 'r-b']];
+                  if (this.blacks_move){
+                        this.whites_move = true;
+                        this.blacks_move = false;
+                        this.rotate = !this.rotate;
+                  }
             });
         }
 
