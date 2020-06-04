@@ -288,6 +288,8 @@ window.Chess_Scene = window.classes.Chess_Scene =
             //move booleans
             this.whites_move = true;
             this.blacks_move = false;
+            this.white_taken_list = [];
+            this.black_taken_list = [];
 
             //chess game - initialize to empty board
             this.gameboard = [['r-w', 'k-w', 'B-w', 'q-w',  'a-w', 'B-w', 'k-w', 'r-w'],
@@ -422,44 +424,14 @@ window.Chess_Scene = window.classes.Chess_Scene =
                               [  '_',   '_',   '_',   '_',    '_',   '_',   '_',   '_'],
                               ['p-b', 'p-b', 'p-b', 'p-b',  'p-b', 'p-b', 'p-b', 'p-b'],
                               ['r-b', 'k-b', 'B-b', 'q-b',  'a-b', 'B-b', 'k-b', 'r-b']];
+                  this.white_taken_list = [];
+                  this.black_taken_list = [];
                   if (this.blacks_move){
                         this.whites_move = true;
                         this.blacks_move = false;
                         this.rotate = !this.rotate;
                   }
             });
-        }
-
-
-        get_ex()
-        {
-            //FLIP BETWEEN RESET GAME AND MID GAME
-            this.playing = !this.playing;
-                 if (this.playing) {
-                        this.gameboard =
-                             [['r-w',   '_',   '_', 'q-w',   '_', 'r-w', 'a-w',   '_'],
-                              [  '_',   '_',   '_', 'p-w', 'B-w', 'p-w', 'p-w', 'p-w'],
-                              [  '_',   '_', 'p-w',   '_', 'p-w', 'k-w',   '_',   '_'],
-                              [  '_',   '_',   '_', 'p-b',   '_',   '_',   '_',   '_'],
-                              [  '_', 'k-w', 'p-b',   '_', 'B-w', 'p-b',   '_',   '_'],
-                              [  '_',   '_', 'k-b',   '_',   '_',   '_',   '_',   '_'],
-                              ['p-b', 'p-b',   '_', 'q-b', 'B-b',   '_', 'p-b', 'p-b'],
-                              [ '_',   '_',  'a-b', 'r-b',   '_',  '_',    '_', 'r-b']];
-                        this.curr_z = this.white_z;
-                        this.curr_x = this.rook_x;
-                 } else {
-                        this.gameboard =
-                             [['r-w', 'k-w', 'B-w', 'q-w',  'a-w', 'B-w', 'k-w', 'r-w'],
-                              ['p-w', 'p-w', 'p-w', 'p-w',  'p-w', 'p-w', 'p-w', 'p-w'],
-                              [  '_',   '_',   '_',   '_',    '_',   '_',   '_',   '_'],
-                              [  '_',   '_',   '_',   '_',    '_',   '_',   '_',   '_'],
-                              [  '_',   '_',   '_',   '_',    '_',   '_',   '_',   '_'],
-                              [  '_',   '_',   '_',   '_',    '_',   '_',   '_',   '_'],
-                              ['p-b', 'p-b', 'p-b', 'p-b',  'p-b', 'p-b', 'p-b', 'p-b'],
-                              ['r-b', 'k-b', 'B-b', 'q-b',  'a-b', 'B-b', 'k-b', 'r-b']];
-                        this.curr_z = this.black_pawn_z;
-                        this.curr_x = this.knight_x;
-                 }
         }
 
 
@@ -1095,7 +1067,7 @@ window.Chess_Scene = window.classes.Chess_Scene =
 
                  if(graphics_state.animation_time > this.animating_start_time + 1000) {
                     this.animating = false;
-                    this.gameboard[(end_y+10)/2][(end_x+10)/2] = this.animating_piece;   // update game board with new piece               
+                    this.gameboard[(end_y+10)/2][(end_x+10)/2] = this.animating_piece;   // update game board with new piece              
                     this.blacks_move = !this.blacks_move;
                     this.whites_move = !this.whites_move;
                     let i = 0;
@@ -1119,7 +1091,72 @@ window.Chess_Scene = window.classes.Chess_Scene =
                              this.draw_piece(graphics_state, pos, c, curr[0]);
                    }
              }}
+             let x_taken = 6.5;
+             let z_taken = this.max;
+             for(var i = 0; i < this.white_taken_list.length; i++){
+                     let pos = this.pos_to_Mat(x_taken, y, z_taken);
+                     let curr = this.white_taken_list[i];
+                     let c = curr[2];
+                             if (curr[0] == 'p'){
+                                //pawn
+                                this.draw_pawn(graphics_state, pos, c);
+                             } else if (curr[0] == 'r'){
+                                //rook
+                                this.draw_rook(graphics_state, pos, c);
+                             } else if (curr[0] == 'k'){
+                                //knight
+                                this.draw_knight(graphics_state, pos, c);
+                             } else if (curr[0] == 'B'){
+                                //bishop
+                                this.draw_bishop(graphics_state, pos, c);
+                             } else if (curr[0] == 'q'){
+                                //queen
+                                this.draw_queen(graphics_state, pos, c);
+                             } else {
+                                //king
+                                this.draw_king(graphics_state, pos, c);
+                             }
+                     x_taken += 2;
+                     if(x_taken > 14.5){
+                             x_taken = 6.5;
+                             z_taken -= 2;
+                     }
+             }
+             let x_taken2 = 6.5;
+             let z_taken2 = this.min;
+             for(var i = 0; i < this.black_taken_list.length; i++){
+                     let pos = this.pos_to_Mat(x_taken2, y, z_taken2);
+                     let curr = this.black_taken_list[i];
+                     let c = curr[2];
+                             if (curr[0] == 'p'){
+                                //pawn
+                                this.draw_pawn(graphics_state, pos, c);
+                             } else if (curr[0] == 'r'){
+                                //rook
+                                this.draw_rook(graphics_state, pos, c);
+                             } else if (curr[0] == 'k'){
+                                //knight
+                                this.draw_knight(graphics_state, pos, c);
+                             } else if (curr[0] == 'B'){
+                                //bishop
+                                this.draw_bishop(graphics_state, pos, c);
+                             } else if (curr[0] == 'q'){
+                                //queen
+                                this.draw_queen(graphics_state, pos, c);
+                             } else {
+                                //king
+                                this.draw_king(graphics_state, pos, c);
+                             }
+                     x_taken2 += 2;
+                     if(x_taken2 > 14.5){
+                             x_taken2 = 6.5;
+                             z_taken2 += 2;
+                     }
+             }
+
+
         }
+
 
         draw_piece(graphics_state, pos, c, piece_char) {
             if (piece_char == 'p'){
@@ -2335,6 +2372,12 @@ window.Chess_Scene = window.classes.Chess_Scene =
                                         if((my_color == "B" && this.blacks_move ) || (my_color == "W" && this.whites_move)){
                                                 console.log(my_piece);
                                                 console.log(this.gameboard[cur_z][cur_x]);
+                                                if(this.gameboard[cur_z][cur_x] != '_' && this.blacks_move){
+                                                        this.white_taken_list.push(this.gameboard[cur_z][cur_x]);
+                                                }
+                                                if(this.gameboard[cur_z][cur_x] != '_' && this.whites_move){
+                                                        this.black_taken_list.push(this.gameboard[cur_z][cur_x]);
+                                                }
                                                 this.display_state(graphics_state);
                                                 this.edit_piece(this.curr_x, this.curr_z, '_'); // remove piece from where it was
                                                 // TRIGGER ANIMATION
