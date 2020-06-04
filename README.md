@@ -10,6 +10,7 @@ HOW TO RUN ==================================
 
 
 HOW TO PLAY =================================
+
 The playing experience is fairly intuitive.
 
 The white player goes first; to move, click the sqare underneath the piece you want to move, and the valid tiles you can
@@ -18,4 +19,5 @@ anywhere else on the board.
 
 
 DEPENDENCIES ================================
+
 We're using tiny-graphics.js for our graphics library.  That's about it!
