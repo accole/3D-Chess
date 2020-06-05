@@ -3,9 +3,9 @@
 created by Adam Cole, Aditya Sriram, Eli Katz, and Jake Wallin
 
 
-# ================ 3D CHESS ================
+# 3D CHESS
 
-# How to Run
+### How to Run ###
 1. Run ./host.command in local repository
 2. Navigate to localhost:8000
 
@@ -21,6 +21,6 @@ anywhere else on the board.
 Logic is not implemented into the game besides the valid next moves.  Players must understand the rules of Check and Checkmate.
 
 
-# Dependencies
+### Dependencies ###
 
 We're using tiny-graphics.js for our graphics library.  That's about it!
