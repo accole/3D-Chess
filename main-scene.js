@@ -414,8 +414,13 @@ window.Chess_Scene = window.classes.Chess_Scene =
                  this.lookaround = !this.lookaround;
             });
             this.new_line();
-            this.key_triggered_button("Reset Game", ["r"], () => {
-                 this.gameboard = 
+            this.key_triggered_button("Reset Game", ["r"], this.reset_game);
+        }
+
+        //reset game function
+        reset_game()
+        {
+                this.gameboard = 
                              [['r-w', 'k-w', 'B-w', 'q-w',  'a-w', 'B-w', 'k-w', 'r-w'],
                               ['p-w', 'p-w', 'p-w', 'p-w',  'p-w', 'p-w', 'p-w', 'p-w'],
                               [  '_',   '_',   '_',   '_',    '_',   '_',   '_',   '_'],
@@ -431,9 +436,7 @@ window.Chess_Scene = window.classes.Chess_Scene =
                         this.blacks_move = false;
                         this.rotate = !this.rotate;
                   }
-            });
         }
-
 
 //-------------------------------------------------------------------------------------------------------------
 //DRAWING SHAPES FUNCTIONS
@@ -1079,6 +1082,9 @@ window.Chess_Scene = window.classes.Chess_Scene =
                  }
              }
 
+             let black_bool = false;
+             let white_bool = false;
+
              //loop through gameboard and display the pieces
              for (let x = this.min; x <= this.max; x = x + 2){
                   for (let z = this.min; z <= this.max; z = z + 2){
@@ -1089,6 +1095,12 @@ window.Chess_Scene = window.classes.Chess_Scene =
                      else {
                              //get the color of piece
                              let c = curr[2];
+                             //check if game is over
+                             if (c == 'w'){
+                                white_bool = true;
+                             } else if (c == 'b') {
+                                black_bool = true;
+                             }
                              let pos = this.pos_to_Mat(x, y, z);
                              let temp = curr[0];
                              console.log(this.max);
@@ -1171,6 +1183,12 @@ window.Chess_Scene = window.classes.Chess_Scene =
                      }
              }
 
+             //reset game if game over
+             if (white_bool == false) {
+                     this.reset_game();
+             } else if (black_bool == false) {
+                     this.reset_game();
+             }
 
         }
 
@@ -2303,21 +2321,6 @@ window.Chess_Scene = window.classes.Chess_Scene =
         }
 
 
-//------------------------------------------------------------------------------------------------------------
-//DRAW CASTLE FUNCTIONS
-
-        draw_castle(graphics_state){
-            //draw a box with stone wall texture on it
-                
-            let model_transform = Mat4.identity().times(Mat4.translation([0,7,0]));
-
-            //this.shapes.box.draw(graphics_state, model_transform, this.board);            
-
-
-        }
-
-
-
 //-------------------------------------------------------------------------------------------------------------
 //DISPLAY FUNCTION
 
@@ -2434,7 +2437,7 @@ window.Chess_Scene = window.classes.Chess_Scene =
 
             //create the scene
 
-            this.draw_castle(graphics_state);
+            //this.draw_castle(graphics_state);
 
             // Draw chess board and set the camera
             
