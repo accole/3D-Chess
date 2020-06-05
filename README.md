@@ -17,6 +17,8 @@ The white player goes first; to move, click the sqare underneath the piece you w
 move to will show up highlighted in red.  Click on one of those tiles to move the piece there. To unselect a piece, just click
 anywhere else on the board.
 
+Logic is not implemented into the game besides the valid next moves.  Players must understand the rules of Check and Checkmate.
+
 
 DEPENDENCIES ================================
 
