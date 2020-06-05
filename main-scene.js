@@ -1184,11 +1184,11 @@ window.Chess_Scene = window.classes.Chess_Scene =
              }
 
              //reset game if game over
-             if (white_bool == false) {
-                     this.reset_game();
-             } else if (black_bool == false) {
-                     this.reset_game();
-             }
+             //if (white_bool == false) {
+             //        this.reset_game();
+             //} else if (black_bool == false) {
+             //        this.reset_game();
+             //}
 
         }
 
