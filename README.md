@@ -1,15 +1,16 @@
 # team-project-cole
-team-project-cole created by GitHub Classroom
+3D Chess
+created by Adam Cole, Aditya Sriram, Eli Katz, and Jake Wallin
 
 
-3D CHESS
+# ===== 3D CHESS =====
 
-HOW TO RUN ==================================
+# How to Run
 1. Run ./host.command
 2. Navigate to localhost:8000
 
 
-HOW TO PLAY =================================
+# How to Play
 
 The playing experience is fairly intuitive.
 
@@ -20,6 +21,6 @@ anywhere else on the board.
 Logic is not implemented into the game besides the valid next moves.  Players must understand the rules of Check and Checkmate.
 
 
-DEPENDENCIES ================================
+# Dependencies
 
 We're using tiny-graphics.js for our graphics library.  That's about it!
