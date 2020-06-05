@@ -1,13 +1,10 @@
-# team-project-cole
-3D Chess
-created by Adam Cole, Aditya Sriram, Eli Katz, and Jake Wallin
-
-
 # 3D CHESS
+
+created by Adam Cole, Aditya Sriram, Eli Katz, and Jake Wallin
 
 ### How to Run ###
 1. Run ./host.command in local repository
-2. Navigate to localhost:8000
+2. Navigate to localhost:8000 in browser
 
 
 ### How to Play ###
