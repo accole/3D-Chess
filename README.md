@@ -6,11 +6,11 @@ created by Adam Cole, Aditya Sriram, Eli Katz, and Jake Wallin
 # ================ 3D CHESS ================
 
 # How to Run
-1. Run ./host.command
+1. Run ./host.command in local repository
 2. Navigate to localhost:8000
 
 
-# How to Play
+### How to Play ###
 
 The playing experience is fairly intuitive.
 
