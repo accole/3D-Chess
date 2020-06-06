@@ -1,6 +1,6 @@
 # 3D CHESS
 
-created by Adam Cole, Aditya Sriram, Eli Katz, and Jake Wallin
+Created by Adam Cole, Aditya Sriram, Eli Katz, and Jake Wallin
 
 ![](assets/next_moves.PNG)
 
