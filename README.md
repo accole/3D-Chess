@@ -2,6 +2,8 @@
 
 created by Adam Cole, Aditya Sriram, Eli Katz, and Jake Wallin
 
+<div align=”center”> ![](assets/next_moves.PNG) </div>
+
 ### How to Run ###
 1. Run ./host.command in local repository
 2. Navigate to localhost:8000 in browser
