@@ -7,7 +7,7 @@ created by Adam Cole, Aditya Sriram, Eli Katz, and Jake Wallin
 ### How to Run ###
 1. Clone repository to local machine
 2. Open index.html
-OR
+### OR ###
 2. Run ./host.command in local repository
 3. Navigate to localhost:8000 in browser
 
