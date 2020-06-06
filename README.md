@@ -5,8 +5,11 @@ created by Adam Cole, Aditya Sriram, Eli Katz, and Jake Wallin
 ![](assets/next_moves.PNG)
 
 ### How to Run ###
-1. Run ./host.command in local repository
-2. Navigate to localhost:8000 in browser
+1. Clone repository to local machine
+2. Open index.html
+OR
+2. Run ./host.command in local repository
+3. Navigate to localhost:8000 in browser
 
 
 ### How to Play ###
